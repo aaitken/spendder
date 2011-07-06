@@ -1,0 +1,5 @@
+{
+	"env":{
+		"default":{"db":"http://acker:dadofmandg@localhost:5984/spendder"}
+	}
+}
