@@ -16,12 +16,23 @@
 	};
 
 	//METHODS===========================================================================================================
-	app.handleReceive=function(responseText){
+	app.handleReceive=function(obj){
 
-		var jsonObj=JSON.parse(responseText);
+		var jsonObj=JSON.parse(obj.response);
 
 		if(jsonObj.error){
-			alert(jsonObj.reason);
+			switch(obj.page){
+				case 'signup':
+					if(jsonObj.reason==='Document update conflict.'){
+						alert('Sorry but that user name is already taken. Please try another one.')
+					}
+					else{
+						alert(jsonObj.reason);
+					}
+					break;
+				default:
+					alert(jsonObj.reason);
+			}
 		}
 		else{
 			alert('success');

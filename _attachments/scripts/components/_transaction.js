@@ -7,8 +7,8 @@ require([
 	'utils/mod-augmentJson',
 
 	//Non-modularized architectural Components
-	'../scripts/scaffolding/namespace.js', //non-clobbering namespace function - includes SPNDR
-	'../scripts/scaffolding/zepto.js'
+	'../scripts/components/scaffolding/namespace.js', //non-clobbering namespace function - includes SPNDR
+	'../scripts/components/scaffolding/zepto.js'
 
 ],function(formToJson,pubSub,augmentJson){
 
