@@ -1,5 +1,5 @@
 function(doc){
 	if(doc.type==='user'){
-		emit(doc.uname);
+		emit([doc._id,doc.pword],null);
 	}
 };

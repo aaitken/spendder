@@ -1,53 +1,53 @@
 (function(){ //for alias scope
 
 	//NAMESPACE + ALIASES===============================================================================================
-	SPNDR.namespace('page.signup');
-	var pageSignup=SPNDR.page.signup,
-		that=pageSignup,
+	SPNDR.namespace('page.login');
+	var pageLogin=SPNDR.page.login,
+		that=pageLogin,
 		utils=SPNDR.utils;
 
 	//PUBSUB============================================================================================================
-	pageSignup.pubSub=function(){;
+	pageLogin.pubSub=function(){
 
 		//make SPNDR.page.transaction a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(pageSignup);
+		SPNDR.scaffolding.pubSub.makePublisher(pageLogin);
 
 		//SPNDR.page.signup subscribes its listeners
-		pageSignup.subscribe(pageSignup.handleSubmit,'submit');
-		pageSignup.subscribe(SPNDR.app.handleReceive,'receive');
+		this.subscribe(this.handleSubmit,'submit');
+		this.subscribe(this.handleReceive,'receive');
 	};
 
 	//METHODS===========================================================================================================
 
+	//handleReceive
+	pageLogin.handleReceive=function(responseText){
+		alert(responseText);
+	}
 	//handleSubmit
-	pageSignup.handleSubmit=function(e){
+	pageLogin.handleSubmit=function(e){
 
 		var req=new XMLHttpRequest(),
-			dat=utils.augmentJson(utils.formToJson(e),'\
-					"type":"user",\
-					"cohorts":"",\
-					"date":"'+(new Date()).toJSON()+'"\
-				');
+			query='http://127.0.0.1:5984/spendder/_design/spendder/_view/users-byPassword?key=\
+				["'+$('input[name=_id]').val()+'","'+$('input[name=pword]').val()+'"]'; //key=["_id","pword"]
 
 		e.preventDefault();
-		req.open('POST','http://127.0.0.1:5984/spendder',true,'acker','dadofmandg');
-		req.setRequestHeader('Content-Type','application/json');
+		req.open('GET',query,true,'acker','dadofmandg');
 		req.onreadystatechange=function(){
 			if(req.readyState===4){
-				that.publish({page:'signup',response:req.responseText},'receive');
+				that.publish(req.responseText,'receive');
 			}
 		};
-		req.send(dat);
+		req.send(null);
 	};
 
 	//INIT==============================================================================================================
-	pageSignup.init=function(){
+	pageLogin.init=function(){
 
 		//set up publisher and subscriptions
 		this.pubSub();
 
 		//add listener > publisher for transaction submits
-		document.signup.addEventListener('submit',function(e){
+		document.login.addEventListener('submit',function(e){
 			that.publish(e,'submit');
 		},false);
 	}
