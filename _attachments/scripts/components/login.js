@@ -10,7 +10,9 @@ require([
 	'../scripts/components/scaffolding/namespace.js', //non-clobbering namespace function - includes SPNDR
 	'../scripts/components/scaffolding/zepto.js'
 
-],function(formToJson,pubSub,augmentJson){
+],
+//callback
+function(formToJson,pubSub,augmentJson){
 
 	//Namespaces
 	SPNDR.namespace('utils');
@@ -26,7 +28,9 @@ require([
 		//App and Page
 		'../scripts/logic/app.js',
 		'../scripts/logic/pageLogin.js'
-	],function(){
+	],
+	//callback
+	function(){
 		//DOMready
 		require.ready(function(){
 			SPNDR.page.login.init();

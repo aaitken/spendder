@@ -25,7 +25,7 @@
 		var req=new XMLHttpRequest(),
 			dat=utils.augmentJson(utils.formToJson(e),'\
 					"type":"user",\
-					"cohorts":"",\
+					"partners":"[]",\
 					"date":"'+(new Date()).toJSON()+'"\
 				');
 
