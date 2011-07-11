@@ -6,7 +6,7 @@ define([],function(){
 
 		e.preventDefault(); //prevent default form submit
 		forEach.call(e.target.elements,function(item){ //function's param via JS spec on forEach (which also includes two others)
-			if(item.type!=='submit'){srcObj[item.name]=item.value;}
+			if(!item.getAttribute('data-formToJsonIgnore')){srcObj[item.name]=item.value;}
 		});
 		return JSON.stringify(srcObj);
 	};

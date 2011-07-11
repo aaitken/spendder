@@ -8,7 +8,8 @@ require([
 
 	//Non-modularized architectural Components
 	'../scripts/components/scaffolding/namespace.js', //non-clobbering namespace function - includes SPNDR
-	'../scripts/components/scaffolding/zepto.js'
+	'../scripts/components/scaffolding/zepto.js',
+	'../scripts/components/utils/sha1.js'
 
 ],function(formToJson,pubSub,augmentJson){
 

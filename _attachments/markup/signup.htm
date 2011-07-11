@@ -3,7 +3,7 @@
 <head>
 	<title>spendder</title>
 	<meta charset="UTF-8">
-	<script data-main="../scripts/components/_signup" src="../scripts/components/require.js"></script>
+	<script data-main="../scripts/components/signup" src="../scripts/components/require.js"></script>
 </head>
 <body>
 	<h1>Spendder > Sign Up</h1>
@@ -12,23 +12,23 @@
 			<tbody>
 			<tr>
 				<td>First Name</td>
-				<td><input name="fname"></td>
+				<td><input name="name-first" data-formToJsonIgnore="true"></td>
 			</tr>
 			<tr>
 				<td>Last Name</td>
-				<td><input name="lname"></td>
+				<td><input name="name-last" data-formToJsonIgnore="true"></td>
 			</tr>
 			<tr>
 				<td>User Name</td>
-				<td><input name="_id"></td>
+				<td><input name="name"></td>
 			</tr>
 			<tr>
 				<td>Password</td>
-				<td><input name="pword"></td>
+				<td><input name="password" data-formToJsonIgnore="true"></td>
 			</tr>
 			</tbody>
 		</table>
-		<button type="submit">Sign Up</button>
+		<button type="submit" data-formToJsonIgnore="true">Sign Up</button>
 	</form>
 </body>
 </html>
