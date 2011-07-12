@@ -5,6 +5,7 @@ require([
 	'utils/mod-formToJson',
 	'scaffolding/mod-pubSub',
 	'utils/mod-augmentJson',
+	'utils/mod-cookies',
 
 	//Non-modularized architectural Components
 	'../scripts/components/scaffolding/namespace.js', //non-clobbering namespace function - includes SPNDR
@@ -12,7 +13,7 @@ require([
 
 ],
 //callback
-function(formToJson,pubSub,augmentJson){
+function(formToJson,pubSub,augmentJson,cookies){
 
 	//Namespaces
 	SPNDR.namespace('utils');
@@ -21,6 +22,7 @@ function(formToJson,pubSub,augmentJson){
 	//Assignments
 	SPNDR.utils.formToJson=formToJson;
 	SPNDR.utils.augmentJson=augmentJson;
+	SPNDR.utils.cookies=cookies;
 	SPNDR.scaffolding.pubSub=pubSub;
 
 	//2nd set of script requests
