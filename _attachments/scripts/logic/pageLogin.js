@@ -12,7 +12,7 @@
 		//make SPNDR.page.transaction a publisher (who can 'subscribe' listeners)
 		SPNDR.scaffolding.pubSub.makePublisher(pageLogin);
 
-		//SPNDR.page.signup subscribes its listeners
+		//SPNDR.page.signup subscribes its listeners //<---------------------------------------------------listeners
 		this.subscribe(this.handleSubmit,'submit');
 		this.subscribe(this.handleReceive,'receive');
 	};
@@ -26,29 +26,32 @@
 	//handleSubmit
 	pageLogin.handleSubmit=function(e){
 
-		var req=new XMLHttpRequest(),
-			auth=(function(){
-					var token=null,
-						dat='name='+$('input[name=name]').val()+'&password='+$('input[name=password]').val();
-					req.open('POST','http://127.0.0.1:5984/_session',false); //synchronous request for auth token
-					req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-					req.onreadystatechange=function(){
-						if(req.readyState===4){ //todo - check for error
-							console.log(req.responseText);
-						}
-					};
-					req.send(dat);
-					return SPNDR.utils.cookies.getCookie('AuthSession');
-				}());
-console.log(auth);
-		e.preventDefault();
-		/*req.open('GET',query,true,'acker','dadofmandg');
+		var req=new XMLHttpRequest();
+
+		e.preventDefault
+
+		//set auth cookie based on name/password
+		(function(){
+
+			var dat='name='+$('input[name=name]').val()+'&password='+$('input[name=password]').val();
+
+			req.open('POST','http://127.0.0.1:5984/_session',false); //synchronous request for auth token
+			req.setRequestHeader('Content-Type','application/x-www-form-urlencoded'); //simulate an html form request
+			req.onreadystatechange=function(){
+				if(req.readyState===4){ //todo - check for error
+					//success
+				}
+			};
+			req.send(dat);
+		}());
+
+		req.open('GET','http://127.0.0.1:5984/_session',true);
 		req.onreadystatechange=function(){
 			if(req.readyState===4){
-				that.publish(req.responseText,'receive');
+				that.publish(req.responseText,'receive'); //------------------------------------------------------->
 			}
 		};
-		req.send(null);*/
+		req.send(null);
 	};
 
 	//INIT==============================================================================================================
@@ -59,7 +62,7 @@ console.log(auth);
 
 		//add listener > publisher for transaction submits
 		document.login.addEventListener('submit',function(e){
-			that.publish(e,'submit');
+			that.publish(e,'submit'); //--------------------------------------------------------------------------->
 		},false);
 	}
 }());
