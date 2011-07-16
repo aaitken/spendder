@@ -2,7 +2,8 @@
 
 	//NAMESPACE + ALIASES===============================================================================================
 	SPNDR.namespace('page.login');
-	var pageLogin=SPNDR.page.login,
+	var app=SPNDR.app,
+		pageLogin=SPNDR.page.login,
 		that=pageLogin,
 		utils=SPNDR.utils;
 
@@ -12,7 +13,7 @@
 		//make SPNDR.page.transaction a publisher (who can 'subscribe' listeners)
 		SPNDR.scaffolding.pubSub.makePublisher(pageLogin);
 
-		//SPNDR.page.signup subscribes its listeners //<---------------------------------------------------listeners
+		//SPNDR.page.signup subscribes its listeners <-----------------------------------------------------listeners
 		this.subscribe(this.handleSubmit,'submit');
 		this.subscribe(this.handleReceive,'receive');
 	};
@@ -56,6 +57,8 @@
 
 	//INIT==============================================================================================================
 	pageLogin.init=function(){
+
+		app.init();
 
 		//set up publisher and subscriptions
 		this.pubSub();

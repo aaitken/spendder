@@ -49,6 +49,7 @@
 					"type":"user",\
 					"roles":[],\
 					"password_sha":"'+hex_sha1($('input[name=password]').val()+salt)+'",\
+					"partners":[],\
 					"salt":"'+salt+'"\
 				');
 		

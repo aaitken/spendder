@@ -1,3 +1,35 @@
+(function(undefined){
+  if (String.prototype.trim === undefined) // fix for iOS 3.2
+    String.prototype.trim = function(){ return this.replace(/^\s+/, '').replace(/\s+$/, '') };
+
+  // For iOS 3.x
+  // from https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/reduce
+  if (Array.prototype.reduce === undefined)
+    Array.prototype.reduce = function(fun){
+      if(this === void 0 || this === null) throw new TypeError();
+      var t = Object(this), len = t.length >>> 0, k = 0, accumulator;
+      if(typeof fun != 'function') throw new TypeError();
+      if(len == 0 && arguments.length == 1) throw new TypeError();
+
+      if(arguments.length >= 2)
+       accumulator = arguments[1];
+      else
+        do{
+          if(k in t){
+            accumulator = t[k++];
+            break;
+          }
+          if(++k >= len) throw new TypeError();
+        } while (true);
+
+      while (k < len){
+        if(k in t) accumulator = fun.call(undefined, accumulator, t[k], k, t);
+        k++;
+      }
+      return accumulator;
+    };
+
+})();
 var Zepto = (function() {
   var undefined, key, css, $$, classList,
     emptyArray = [], slice = emptyArray.slice,
@@ -333,3 +365,328 @@ var Zepto = (function() {
 })();
 
 '$' in window || (window.$ = Zepto);
+(function($){
+  var $$ = $.qsa, handlers = {}, _zid = 1;
+  function zid(element) {
+    return element._zid || (element._zid = _zid++);
+  }
+  function findHandlers(element, event, fn, selector) {
+    event = parse(event);
+    if (event.ns) var matcher = matcherFor(event.ns);
+    return (handlers[zid(element)] || []).filter(function(handler) {
+      return handler
+        && (!event.e  || handler.e == event.e)
+        && (!event.ns || matcher.test(handler.ns))
+        && (!fn       || handler.fn == fn)
+        && (!selector || handler.sel == selector);
+    });
+  }
+  function parse(event) {
+    var parts = ('' + event).split('.');
+    return {e: parts[0], ns: parts.slice(1).sort().join(' ')};
+  }
+  function matcherFor(ns) {
+    return new RegExp('(?:^| )' + ns.replace(' ', ' .* ?') + '(?: |$)');
+  }
+
+  function add(element, events, fn, selector, delegate){
+    var id = zid(element), set = (handlers[id] || (handlers[id] = []));
+    events.split(/\s/).forEach(function(event){
+      var callback = delegate || fn;
+      var proxyfn = function(event) { return callback(event, event.data) };
+      var handler = $.extend(parse(event), {fn: fn, proxy: proxyfn, sel: selector, del: delegate, i: set.length});
+      set.push(handler);
+      element.addEventListener(handler.e, proxyfn, false);
+    });
+  }
+  function remove(element, events, fn, selector){
+    var id = zid(element);
+    (events || '').split(/\s/).forEach(function(event){
+      findHandlers(element, event, fn, selector).forEach(function(handler){
+        delete handlers[id][handler.i];
+        element.removeEventListener(handler.e, handler.proxy, false);
+      });
+    });
+  }
+
+  $.event = { add: add, remove: remove }
+
+  $.fn.bind = function(event, callback){
+    return this.each(function(){
+      add(this, event, callback);
+    });
+  };
+  $.fn.unbind = function(event, callback){
+    return this.each(function(){
+      remove(this, event, callback);
+    });
+  };
+  $.fn.one = function(event, callback){
+    return this.each(function(){
+      var self = this;
+      add(this, event, function wrapper(){
+        callback();
+        remove(self, event, arguments.callee);
+      });
+    });
+  };
+
+  var eventMethods = ['preventDefault', 'stopImmediatePropagation', 'stopPropagation'];
+  function createProxy(event) {
+    var proxy = $.extend({originalEvent: event}, event);
+    eventMethods.forEach(function(key) {
+      proxy[key] = function() {return event[key].apply(event, arguments)};
+    });
+    return proxy;
+  }
+
+  $.fn.delegate = function(selector, event, callback){
+    return this.each(function(i, element){
+      add(element, event, callback, selector, function(e, data){
+        var target = e.target, nodes = $$(element, selector);
+        while (target && nodes.indexOf(target) < 0) target = target.parentNode;
+        if (target && !(target === element) && !(target === document)) {
+          callback.call(target, $.extend(createProxy(e), {
+            currentTarget: target, liveFired: element
+          }), data);
+        }
+      });
+    });
+  };
+  $.fn.undelegate = function(selector, event, callback){
+    return this.each(function(){
+      remove(this, event, callback, selector);
+    });
+  }
+
+  $.fn.live = function(event, callback){
+    $(document.body).delegate(this.selector, event, callback);
+    return this;
+  };
+  $.fn.die = function(event, callback){
+    $(document.body).undelegate(this.selector, event, callback);
+    return this;
+  };
+
+  $.fn.trigger = function(event, data){
+    return this.each(function(){
+      var e = document.createEvent('Events');
+      e.initEvent(event, true, true)
+      e.data = data;
+      this.dispatchEvent(e);
+    });
+  };
+})(Zepto);
+(function($){
+  function detect(ua){
+    var ua = ua, os = {},
+      android = ua.match(/(Android)\s+([\d.]+)/),
+      iphone = ua.match(/(iPhone\sOS)\s([\d_]+)/),
+      ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
+      webos = ua.match(/(webOS)\/([\d.]+)/),
+      blackberry = ua.match(/(BlackBerry).*Version\/([\d.]+)/);
+    if (android) os.android = true, os.version = android[2];
+    if (iphone) os.ios = true, os.version = iphone[2].replace(/_/g, '.'), os.iphone = true;
+    if (ipad) os.ios = true, os.version = ipad[2].replace(/_/g, '.'), os.ipad = true;
+    if (webos) os.webos = true, os.version = webos[2];
+    if (blackberry) os.blackberry = true, os.version = blackberry[2];
+    return os;
+  }
+  $.os = detect(navigator.userAgent);
+  $.__detect = detect;
+
+  var v = navigator.userAgent.match(/WebKit\/([\d.]+)/);
+  $.browser = v ? { webkit: true, version: v[1] } : { webkit: false };
+})(Zepto);
+(function($, undefined){
+  $.fn.anim = function(properties, duration, ease, callback){
+    var transforms = [], opacity, key;
+    for (key in properties)
+      if (key === 'opacity') opacity = properties[key];
+      else transforms.push(key + '(' + properties[key] + ')');
+
+    $.isFunction(callback) && this.one('webkitTransitionEnd', callback);
+
+    return this.css({
+      '-webkit-transition': 'all ' + (duration !== undefined ? duration : 0.5) + 's ' + (ease || ''),
+      '-webkit-transform': transforms.join(' '),
+      opacity: opacity
+    });
+  }
+})(Zepto);
+(function($){
+  var jsonpID = 0,
+      isObject = $.isObject,
+      key;
+
+  function empty() {}
+
+  $.ajaxJSONP = function(options){
+    var jsonpString = 'jsonp' + ++jsonpID,
+        script = document.createElement('script');
+    window[jsonpString] = function(data){
+      options.success(data);
+      delete window[jsonpString];
+    };
+    script.src = options.url.replace(/=\?/, '=' + jsonpString);
+    $('head').append(script);
+  };
+
+  $.ajaxSettings = {
+    type: 'GET',
+    beforeSend: empty, success: empty, error: empty, complete: empty,
+    accepts: {
+      script: 'text/javascript, application/javascript',
+      json:   'application/json',
+      xml:    'application/xml, text/xml',
+      html:   'text/html',
+      text:   'text/plain'
+    }
+  };
+
+  $.ajax = function(options){
+    options = options || {};
+    var settings = $.extend({}, options);
+    for (key in $.ajaxSettings) if (!settings[key]) settings[key] = $.ajaxSettings[key];
+
+    if (/=\?/.test(settings.url)) return $.ajaxJSONP(settings);
+
+    if (!settings.url) settings.url = window.location.toString();
+    if (settings.data && !settings.contentType) settings.contentType = 'application/x-www-form-urlencoded';
+    if (isObject(settings.data)) settings.data = $.param(settings.data);
+
+    if (settings.type.match(/get/i) && settings.data) {
+      var queryString = settings.data;
+      if (settings.url.match(/\?.*=/)) {
+        queryString = '&' + queryString;
+      } else if (queryString[0] != '?') {
+        queryString = '?' + queryString;
+      }
+      settings.url += queryString;
+    }
+
+    var mime = settings.accepts[settings.dataType],
+        xhr = new XMLHttpRequest();
+
+    settings.headers = $.extend({'X-Requested-With': 'XMLHttpRequest'}, settings.headers || {});
+    if (mime) settings.headers['Accept'] = mime;
+
+    xhr.onreadystatechange = function(){
+      if (xhr.readyState == 4) {
+        var result, error = false;
+        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 0) {
+          if (mime == 'application/json') {
+            try { result = JSON.parse(xhr.responseText); }
+            catch (e) { error = e; }
+          }
+          else result = xhr.responseText;
+          if (error) settings.error(xhr, 'parsererror', error);
+          else settings.success(result, 'success', xhr);
+        } else {
+          error = true;
+          settings.error(xhr, 'error');
+        }
+        settings.complete(xhr, error ? 'error' : 'success');
+      }
+    };
+
+    xhr.open(settings.type, settings.url, true);
+    if (settings.beforeSend(xhr, settings) === false) {
+      xhr.abort();
+      return false;
+    }
+
+    if (settings.contentType) settings.headers['Content-Type'] = settings.contentType;
+    for (name in settings.headers) xhr.setRequestHeader(name, settings.headers[name]);
+    xhr.send(settings.data);
+
+    return xhr;
+  };
+
+  $.get = function(url, success){ $.ajax({ url: url, success: success }) };
+  $.post = function(url, data, success, dataType){
+    if ($.isFunction(data)) dataType = dataType || success, success = data, data = null;
+    $.ajax({ type: 'POST', url: url, data: data, success: success, dataType: dataType });
+  };
+  $.getJSON = function(url, success){ $.ajax({ url: url, success: success, dataType: 'json' }) };
+
+  $.fn.load = function(url, success){
+    if (!this.length) return this;
+    var self = this, parts = url.split(/\s/), selector;
+    if (parts.length > 1) url = parts[0], selector = parts[1];
+    $.get(url, function(response){
+      self.html(selector ?
+        $(document.createElement('div')).html(response).find(selector).html()
+        : response);
+      success && success();
+    });
+    return this;
+  };
+
+  $.param = function(obj, v){
+    var result = [], add = function(key, value){
+      result.push(encodeURIComponent(v ? v + '[' + key + ']' : key)
+        + '=' + encodeURIComponent(value));
+      },
+      isObjArray = $.isArray(obj);
+
+    for(key in obj)
+      if(isObject(obj[key]))
+        result.push($.param(obj[key], (v ? v + '[' + key + ']' : key)));
+      else
+        add(isObjArray ? '' : key, obj[key]);
+
+    return result.join('&').replace('%20', '+');
+  };
+})(Zepto);
+(function($){
+  var touch = {}, touchTimeout;
+
+  function parentIfText(node){
+    return 'tagName' in node ? node : node.parentNode;
+  }
+
+  function swipeDirection(x1, x2, y1, y2){
+    var xDelta = Math.abs(x1 - x2), yDelta = Math.abs(y1 - y2);
+    if (xDelta >= yDelta) {
+      return (x1 - x2 > 0 ? 'Left' : 'Right');
+    } else {
+      return (y1 - y2 > 0 ? 'Up' : 'Down');
+    }
+  }
+
+  $(document).ready(function(){
+    $(document.body).bind('touchstart', function(e){
+      var now = Date.now(), delta = now - (touch.last || now);
+      touch.target = parentIfText(e.touches[0].target);
+      touchTimeout && clearTimeout(touchTimeout);
+      touch.x1 = e.touches[0].pageX;
+      touch.y1 = e.touches[0].pageY;
+      if (delta > 0 && delta <= 250) touch.isDoubleTap = true;
+      touch.last = now;
+    }).bind('touchmove', function(e){
+      touch.x2 = e.touches[0].pageX;
+      touch.y2 = e.touches[0].pageY;
+    }).bind('touchend', function(e){
+      if (touch.isDoubleTap) {
+        $(touch.target).trigger('doubleTap');
+        touch = {};
+      } else if (touch.x2 > 0 || touch.y2 > 0) {
+        (Math.abs(touch.x1 - touch.x2) > 30 || Math.abs(touch.y1 - touch.y2) > 30)  &&
+          $(touch.target).trigger('swipe') &&
+          $(touch.target).trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)));
+        touch.x1 = touch.x2 = touch.y1 = touch.y2 = touch.last = 0;
+      } else if ('last' in touch) {
+        touchTimeout = setTimeout(function(){
+          touchTimeout = null;
+          $(touch.target).trigger('tap')
+          touch = {};
+        }, 250);
+      }
+    }).bind('touchcancel', function(){ touch = {} });
+  });
+
+  ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'doubleTap', 'tap'].forEach(function(m){
+    $.fn[m] = function(callback){ return this.bind(m, callback) }
+  });
+})(Zepto);
