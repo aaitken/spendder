@@ -27,32 +27,27 @@
 	//handleSubmit
 	pageLogin.handleSubmit=function(e){
 
-		var req=new XMLHttpRequest();
-
-		e.preventDefault
-
-		//set auth cookie based on name/password
-		(function(){
-
-			var dat='name='+$('input[name=name]').val()+'&password='+$('input[name=password]').val();
-
-			req.open('POST','http://127.0.0.1:5984/_session',false); //synchronous request for auth token
-			req.setRequestHeader('Content-Type','application/x-www-form-urlencoded'); //simulate an html form request
-			req.onreadystatechange=function(){
-				if(req.readyState===4){ //todo - check for error
-					//success
-				}
+		var getAuthCookie=function(){
+				$.ajax({
+					type:'GET',
+					url:'http://127.0.0.1:5984/_session',
+					success:function(responseText){
+						that.publish(responseText,'receive'); //----------------------------------------------->
+					}
+				});
 			};
-			req.send(dat);
-		}());
 
-		req.open('GET','http://127.0.0.1:5984/_session',true);
-		req.onreadystatechange=function(){
-			if(req.readyState===4){
-				that.publish(req.responseText,'receive'); //------------------------------------------------------->
+		e.preventDefault();
+		$.ajax({
+			type:'POST',
+			data:'name='+$('input[name=name]').val()+'&password='+$('input[name=password]').val(),
+			url:'http://127.0.0.1:5984/_session',
+			success:getAuthCookie,
+			error:function(xhr,error){
+				if(error==='error'){alert(xhr.responseText)}
+				else{alert(error)}
 			}
-		};
-		req.send(null);
+		});
 	};
 
 	//INIT==============================================================================================================
@@ -64,8 +59,8 @@
 		this.pubSub();
 
 		//add listener > publisher for transaction submits
-		document.login.addEventListener('submit',function(e){
+		$('form[name=login]').bind('submit',function(e){
 			that.publish(e,'submit'); //--------------------------------------------------------------------------->
-		},false);
+		});
 	};
 }());
