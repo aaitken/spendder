@@ -25,17 +25,20 @@ function(formToJson,pubSub,augmentJson,cookies){
 	SPNDR.utils.cookies=cookies;
 	SPNDR.scaffolding.pubSub=pubSub;
 
-	//2nd set of script requests
+	//2nd 'set' of script requests
 	require([
-		//App and Page
-		'../scripts/logic/app.js',
-		'../scripts/logic/pageLogin.js'
+		'../scripts/logic/app.js'
 	],
-	//callback
+	//callback - 3rd 'set' of script requests
 	function(){
-		//DOMready
-		require.ready(function(){
-			SPNDR.page.login.init();
+		require([
+			'../scripts/logic/pageLogin.js'
+		],
+		function(){
+			//callback - domready
+			require.ready(function(){
+				SPNDR.page.login.init();
+			});
 		});
 	});
 });

@@ -17,24 +17,32 @@
 		SPNDR.scaffolding.pubSub.makePublisher(app);
 
 		//SPNDR.app subscribes its listeners <-------------------------------------------------------------listeners
-		// 'show'
-		app.subscribe(app.hitShow,'show');
+		//showReceipt
+		app.subscribe(app.renderShow,'showReceipt');
+		//showRequest
+		app.subscribe(app.hitShow,'showRequest');
+
+
 	};
 
 	//METHODS===========================================================================================================
+
 	app.hitShow=function(show){
 
 		var req=new XMLHttpRequest();
 
-		console.log(this);
 		req.open('GET',this.host+this.pathShow+show,true);
 		req.onreadystatechange=function(){
 			if(req.readyState===4){
-				alert(req.responseText);
+				that.publish(req.responseText,'showReceipt'); //--------------------------------------------------->
 			}
 		};
 		req.send(null);
 	}.bind(app); //bound here to init b/c this actually gets fired under a different context
+
+	app.renderShow=function(responseText){
+		document.getElementById('content').innerHTML=responseText;
+	};
 
 	//INIT==============================================================================================================
 	app.init=function(){
@@ -43,7 +51,7 @@
 
 		$('a[data-show]').each(function(){ //this within the zepto function = raw dom el
 			this.addEventListener('click',function(e){
-				that.publish(this.getAttribute('data-show'),'show') //--------------------------------------------->
+				that.publish(this.getAttribute('data-show'),'showRequest') //-------------------------------------->
 			},false);
 		});
 	};

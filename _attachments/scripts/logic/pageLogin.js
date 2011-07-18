@@ -67,5 +67,5 @@
 		document.login.addEventListener('submit',function(e){
 			that.publish(e,'submit'); //--------------------------------------------------------------------------->
 		},false);
-	}
+	};
 }());
