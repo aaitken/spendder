@@ -14,8 +14,11 @@
 		SPNDR.scaffolding.pubSub.makePublisher(pageLogin);
 
 		//SPNDR.page.signup subscribes its listeners <-----------------------------------------------------listeners
-		this.subscribe(this.handleSubmit,'submit');
+		//receive
 		this.subscribe(this.handleReceive,'receive');
+		//submit
+		this.subscribe(this.handleSubmit,'submit');
+
 	};
 
 	//METHODS===========================================================================================================
@@ -32,7 +35,7 @@
 					type:'GET',
 					url:'http://127.0.0.1:5984/_session',
 					success:function(responseText){
-						that.publish(responseText,'receive'); //----------------------------------------------->
+						that.publish(responseText,'receive'); //--------------------------------------------------->
 					}
 				});
 			};
