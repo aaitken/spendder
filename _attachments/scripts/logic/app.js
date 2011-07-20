@@ -18,30 +18,36 @@
 
 		//SPNDR.app subscribes its listeners <-------------------------------------------------------------listeners
 		//showReceipt
+		app.subscribe(app.manageHistory,'showReceipt');
 		app.subscribe(app.renderShow,'showReceipt');
 		//showRequest
 		app.subscribe(app.hitShow,'showRequest');
-
-
 	};
 
 	//METHODS===========================================================================================================
 
+	//request couchdb show
 	app.hitShow=function(show){
-
-		var req=new XMLHttpRequest();
-
-		req.open('GET',this.host+this.pathShow+show,true);
-		req.onreadystatechange=function(){
-			if(req.readyState===4){
-				that.publish(req.responseText,'showReceipt'); //--------------------------------------------------->
+		$.ajax({
+			type:'GET',
+			url:this.host+this.pathShow+show,
+			success:function(responseText){
+				that.publish({
+					show:show,
+					response:responseText
+				},'showReceipt'); //------------------------------------------------------------------------------->
 			}
-		};
-		req.send(null);
-	}.bind(app); //bound here to init b/c this actually gets fired under a different context
+		});
+	}.bind(app); //fired from pubSub context
 
-	app.renderShow=function(responseText){
-		document.getElementById('content').innerHTML=responseText;
+	//browser url and history management
+	app.manageHistory=function(obj){
+		history.pushState({},'Spendder Signup',obj.show);
+	};
+
+	//display the couchdb's response to our show request - todo: combine with hitShow if nothing else depends on response
+	app.renderShow=function(obj){
+		$('#content').html(obj.response);
 	};
 
 	//INIT==============================================================================================================
@@ -49,10 +55,9 @@
 
 		this.pubSub();
 
-		$('a[data-show]').each(function(){ //this within the zepto function = raw dom el
-			this.addEventListener('click',function(e){
-				that.publish(this.getAttribute('data-show'),'showRequest') //-------------------------------------->
-			},false);
+		//listener setup for clicks on els with data-show, publish the attribute's value
+		$('a[data-show]').live('click',function(e){
+			that.publish($(e.target).attr('data-show'),'showRequest'); //------------------------------------------>
 		});
 	};
 }());

@@ -1,3 +1,6 @@
+//Iterates through fields in a submitted form (determined by e param)
+//and returns json obj of fieldname:value pairs for all fields with data-json attached
+
 define([],function(){
 	var formToJson=function(e){ //e = submit event
 
