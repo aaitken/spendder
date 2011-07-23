@@ -8,8 +8,8 @@ require([
 	'scaffolding/mod-history',
 
 	//Non-modularized architectural Components
-	'../scripts/components/scaffolding/namespace.js', //non-clobbering namespace function - includes SPNDR
-	'../scripts/components/scaffolding/zepto.js'
+	'scripts/components/scaffolding/namespace.js', //non-clobbering namespace function - includes SPNDR
+	'scripts/components/scaffolding/zepto.js'
 
 ],
 //callback
@@ -27,17 +27,18 @@ function(formToJson,pubSub,augmentJson,history){
 
 	//2nd 'set' of script requests
 	require([
-		'../scripts/logic/app.js'
+		'scripts/logic/_app.js'
 	],
 	//callback - 3rd 'set' of script requests
 	function(){
 		require([
-			'../scripts/logic/pageLogin.js'
+			'scripts/logic/index.js'
 		],
 		function(){
 			//callback - domready
 			require.ready(function(){
-				SPNDR.page.login.init();
+				SPNDR.app.init();
+				SPNDR.page.index.init();
 			});
 		});
 	});

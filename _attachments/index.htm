@@ -3,7 +3,7 @@
 <head>
 	<title>spendder</title>
 	<meta charset="UTF-8">
-	<script data-main="../scripts/components/login" src="../scripts/components/require.js"></script>
+	<script data-main="scripts/components/index" src="scripts/components/require.js"></script>
 </head>
 <body>
 <header>
@@ -14,10 +14,10 @@
 		<a>Partners</a>
 	</nav>
 </header>
-<div id="content"><!--catching container-->
+<div id="content"><!--catching container - this content is duped under the templates dir-->
 	<h2>Login</h2>
 	<form name="login">
-		<div><label>User Name</label><input name="name"></div>
+		<div><label>Email</label><input name="name"></div>
 		<div><label>Password</label><input name="password"></div>
 		<div><button type="submit">Log In</button>&nbsp;|&nbsp;<a data-show="signup">Sign Up</a></div>
 	</form>

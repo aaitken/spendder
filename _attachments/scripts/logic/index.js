@@ -1,19 +1,21 @@
 (function(){ //for alias scope
 
 	//NAMESPACE + ALIASES===============================================================================================
-	SPNDR.namespace('page.login');
+	SPNDR.namespace('page.index');
 	var app=SPNDR.app,
-		pageLogin=SPNDR.page.login,
-		that=pageLogin,
+		pgIndex=SPNDR.page.index,
+		that=pgIndex,
 		utils=SPNDR.utils;
 
 	//PUBSUB============================================================================================================
-	pageLogin.pubSub=function(){
+	pgIndex.pubSub=function(){
 
 		//make SPNDR.page.transaction a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(pageLogin);
+		SPNDR.scaffolding.pubSub.makePublisher(pgIndex);
 
-		//SPNDR.page.signup subscribes its listeners <-----------------------------------------------------listeners
+		//SPNDR.page.signup subscribes its listeners to... <-----------------------------------------------listeners
+		//init
+		this.subscribe(this.setup,'init');
 		//receive
 		this.subscribe(this.handleReceive,'receive');
 		//submit
@@ -22,13 +24,14 @@
 	};
 
 	//METHODS===========================================================================================================
-
-	//handleReceive
-	pageLogin.handleReceive=function(responseText){
+	//handleReceive: receipt of authorization cookie request
+	//handleSubmit: two-part authorization request
+	//setup: Dom setup
+	
+	pgIndex.handleReceive=function(responseText){
 		alert(responseText);
 	}
-	//handleSubmit
-	pageLogin.handleSubmit=function(e){
+	pgIndex.handleSubmit=function(e){
 
 		var getAuthCookie=function(){
 				$.ajax({
@@ -53,17 +56,16 @@
 		});
 	};
 
-	//INIT==============================================================================================================
-	pageLogin.init=function(){
-
-		app.init();
-
-		//set up publisher and subscriptions
-		this.pubSub();
-
+	pgIndex.setup=function(){
 		//add listener > publisher for transaction submits
 		$('form[name=login]').bind('submit',function(e){
 			that.publish(e,'submit'); //--------------------------------------------------------------------------->
 		});
+	};
+
+	//INIT==============================================================================================================
+	pgIndex.init=function(){
+		this.pubSub(); //set up publisher and subscriptions
+		this.publish(null,'init'); //------------------------------------------------------------------------------>
 	};
 }());
