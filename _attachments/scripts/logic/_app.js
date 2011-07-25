@@ -30,15 +30,25 @@
 
 	//request couchdb show
 	app.hitShow=function(show){
-		$.ajax({
-			type:'GET',
-			url:this.host+this.pathShow+show,
-			success:function(responseText){
-				that.publish({
-					show:show,
-					response:responseText
-				},'showReceipt'); //------------------------------------------------------------------------------->
-			}
+
+		var namespace=show.split('.')[0],//root part of show name, minus the .html
+			requireArray=['text!'+this.host+this.pathShow+show],
+			callback=null; //page init function to fire depending on if code has already been loaded
+
+		if(!SPNDR.page[namespace]){
+			requireArray.push('scripts/logic/'+namespace+'.js');
+			callback='init';
+		}
+		else{
+			callback='setup';
+		}
+
+		require(requireArray,function(html){
+			that.publish({
+				show:show,
+				response:html,
+				callback:SPNDR.page[namespace][callback]
+			},'showReceipt'); //----------------------------------------------------------------------------------->
 		});
 	}.bind(app);
 	//browser url and history management
@@ -48,6 +58,7 @@
 	//display the couchdb's response to our show request - todo: combine with hitShow if nothing else depends on response
 	app.renderShow=function(obj){
 		$('#content').html(obj.response);
+		obj.callback();
 	};
 
 	//setup
@@ -59,13 +70,13 @@
 		});
 
 		//browser back and forward buttons - by the time this fires, location has been changed
-		this.manageHistory({show:'index'});
+		this.manageHistory({show:'index.html'});
 		(function(){
 			var i=0;
 			window.onpopstate=function(e){
 				i++;
 				if(i>1){ //because chrome is firing this on initial page load, which we don't want
-					var loc=window.location.href.split('/').pop().split('.')[0];
+					var loc=window.location.href.split('/').pop();
 					that.publish(loc,'showRequest'); //------------------------------------------------------------>
 				}
 			};

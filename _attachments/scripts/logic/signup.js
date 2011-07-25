@@ -2,17 +2,19 @@
 
 	//NAMESPACE + ALIASES===============================================================================================
 	SPNDR.namespace('page.signup');
-	var pageSignup=SPNDR.page.signup,
-		that=pageSignup, //inner function reference mechanism for convention
+	var pgSignup=SPNDR.page.signup,
+		that=pgSignup, //inner function reference mechanism for convention
 		utils=SPNDR.utils;
 
 	//PUBSUB============================================================================================================
-	pageSignup.pubSub=function(){
+	pgSignup.pubSub=function(){
 
 		//make SPNDR.page.transaction a PUBLISHer (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(pageSignup);
+		SPNDR.scaffolding.pubSub.makePublisher(pgSignup);
 
 		//SPNDR.page.signup SUBSCRIBEs its listeners to...
+		//init
+		this.subscribe(this.setup,'init');
 		//receive (form response)
 		this.subscribe(this.handleReceive,'receive');
 		//submit (form submission)
@@ -23,12 +25,12 @@
 	//METHODS===========================================================================================================
 
 	//handleReceive
-	pageSignup.handleReceive=function(responseText){
+	pgSignup.handleReceive=function(responseText){
 		alert(responseText);
 	};
 
 	//handleSubmit
-	pageSignup.handleSubmit=function(e){
+	pgSignup.handleSubmit=function(e){
 
 		var req=new XMLHttpRequest(),
 			//salt is added on to password - end hash includes both
@@ -64,15 +66,18 @@
 		req.send(dat);
 	};
 
-	//INIT==============================================================================================================
-	pageSignup.init=function(){
-
-		//set up publisher and subscriptions
-		this.pubSub();
-
-		//add listener > publisher for transaction submits
-		document.signup.addEventListener('submit',function(e){
+	//setup: Dom setup
+	pgSignup.setup=function(){
+		//add listener > publisher for signup submits
+		$('form[name=signup]').bind('submit',function(e){
 			that.publish(e,'submit'); //--------------------------------------------------------------------------->
-		},false);
-	}
+		});
+	};
+
+	//INIT==============================================================================================================
+	//init: fires for first script load
+	pgSignup.init=function(){
+		this.pubSub(); //set up publisher and subscriptions
+		this.publish(null,'init');
+	}.bind(pgSignup);
 }());

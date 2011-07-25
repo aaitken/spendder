@@ -25,12 +25,10 @@
 
 	//METHODS===========================================================================================================
 	//handleReceive: receipt of authorization cookie request
-	//handleSubmit: two-part authorization request
-	//setup: Dom setup
-	
 	pgIndex.handleReceive=function(responseText){
 		alert(responseText);
 	}
+	//handleSubmit: two-part authorization request
 	pgIndex.handleSubmit=function(e){
 
 		var getAuthCookie=function(){
@@ -56,6 +54,7 @@
 		});
 	};
 
+	//setup: Dom setup
 	pgIndex.setup=function(){
 		//add listener > publisher for transaction submits
 		$('form[name=login]').bind('submit',function(e){
@@ -64,6 +63,7 @@
 	};
 
 	//INIT==============================================================================================================
+	//init: fires for first script load
 	pgIndex.init=function(){
 		this.pubSub(); //set up publisher and subscriptions
 		this.publish(null,'init'); //------------------------------------------------------------------------------>
