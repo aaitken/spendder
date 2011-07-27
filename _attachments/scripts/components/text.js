@@ -146,10 +146,7 @@
              */
             parseName: function (name) {
 
-				name='../spendder/_show/'+name.split('_show/')[1]; //AMA for couchdb compatibility
-				
-
-                var strip = false,
+				var strip = false,
 					index = name.indexOf("."),
                     modName = name.substring(0, index),
                     ext = name.substring(index + 1, name.length);

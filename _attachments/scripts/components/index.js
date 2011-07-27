@@ -7,13 +7,17 @@ require([
 	'utils/mod-augmentJson',
 	'scaffolding/mod-history',
 
+	//css
+	//'text!/spendder/_design/spendder/styles/_app.css',
+
 	//Non-modularized architectural Components
 	'scripts/components/scaffolding/namespace.js', //non-clobbering namespace function - includes SPNDR
 	'scripts/components/scaffolding/zepto.js'
 
+
 ],
 //callback
-function(formToJson,pubSub,augmentJson,history){
+function(formToJson,pubSub,augmentJson,history/*,css*/){
 
 	//Namespaces
 	SPNDR.namespace('utils');

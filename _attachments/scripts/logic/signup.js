@@ -1,4 +1,6 @@
-(function(){ //for alias scope
+require([
+	'scripts/components/utils/sha1.js'
+],function(){//provides alias scope
 
 	//NAMESPACE + ALIASES===============================================================================================
 	SPNDR.namespace('page.signup');
@@ -32,38 +34,43 @@
 	//handleSubmit
 	pgSignup.handleSubmit=function(e){
 
-		var req=new XMLHttpRequest(),
-			//salt is added on to password - end hash includes both
-			salt=(function(){
-					var uuid=null;
-					req.open('GET','http://127.0.0.1:5984/_uuids',false); //synchronous request to couch uuid generator
-					req.onreadystatechange=function(){
-						if(req.readyState===4){
-							uuid=JSON.parse(req.responseText).uuids[0];
-						}
-					};
-					req.send();
-					return uuid;
-				}()),
-			//data to be sent to _users api
-			dat=utils.augmentJson(utils.formToJson(e),'\
-					"_id":"org.couchdb.user:'+$('input[name=name]').val()+'",\
-					"type":"user",\
-					"roles":[],\
-					"password_sha":"'+hex_sha1($('input[name=password]').val()+salt)+'",\
-					"partners":[],\
-					"salt":"'+salt+'"\
-				');
-		
-		e.preventDefault(); //kill default form submit
-		req.open('POST','http://127.0.0.1:5984/_users',true); //no username/password needed?
-		req.setRequestHeader('Content-Type','application/json');
-		req.onreadystatechange=function(){
-			if(req.readyState===4){
-				that.publish(req.responseText,'receive'); //------------------------------------------------------->
-			}
-		};
-		req.send(dat);
+			var secondRequest=function(salt){
+
+				var data;//data to be sent to _users api
+					data=utils.augmentJson(utils.formToJson(e),'\
+						"_id":"org.couchdb.user:'+$('input[name=name]').val()+'",\
+						"type":"user",\
+						"roles":[],\
+						"password_sha":"'+hex_sha1($('input[name=password]').val()+salt)+'",\
+						"partners":[],\
+						"salt":"'+salt+'"\
+					');
+
+				$.ajax({
+					type:'POST',
+					data:data,
+					contentType:'application/json',
+					url:'http://127.0.0.1:5984/_users',
+					success:function(body){
+						that.publish(body,'receive'); //------------------------------------------------------->
+					},
+					error:function(xhr,error){
+						if(error==='error'){alert(xhr.responseText)}
+						else{alert(error)}
+					}
+				});
+			};
+
+			e.preventDefault();
+
+			//get salt to add on to password hash
+			$.ajax({
+				url:'http://127.0.0.1:5984/_uuids',
+				success:function(response){
+					var uuid=JSON.parse(response).uuids[0];
+					secondRequest(uuid);
+				}
+			});
 	};
 
 	//setup: Dom setup
@@ -80,4 +87,7 @@
 		this.pubSub(); //set up publisher and subscriptions
 		this.publish(null,'init');
 	}.bind(pgSignup);
-}());
+
+	SPNDR.app.waitOnRequirements=false; //all required scripts have been loaded.
+});
+SPNDR.app.waitOnRequirements=true; //this indicates to core app logic that we are still waiting for a required script...

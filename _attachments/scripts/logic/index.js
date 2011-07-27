@@ -31,22 +31,14 @@
 	//handleSubmit: two-part authorization request
 	pgIndex.handleSubmit=function(e){
 
-		var getAuthCookie=function(){
-				$.ajax({
-					type:'GET',
-					url:'http://127.0.0.1:5984/_session',
-					success:function(responseText){
-						that.publish(responseText,'receive'); //--------------------------------------------------->
-					}
-				});
-			};
-
 		e.preventDefault();
 		$.ajax({
 			type:'POST',
-			data:'name='+$('input[name=name]').val()+'&password='+$('input[name=password]').val(),
+			data:'name='+$('input[name=name]').val()+'&password='+$('input[name=password]').val(), //NOT json
 			url:'http://127.0.0.1:5984/_session',
-			success:getAuthCookie,
+			success:function(body){
+				that.publish(body,'receive'); //----------------------------------------------------------->
+			},
 			error:function(xhr,error){
 				if(error==='error'){alert(xhr.responseText)}
 				else{alert(error)}

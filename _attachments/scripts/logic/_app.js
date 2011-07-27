@@ -8,6 +8,7 @@
 	//PROPERTIES========================================================================================================
 	app.host='http://127.0.0.1:5984/';
 	app.pathShow='spendder/_design/spendder/_show/';
+	app.waitOnRequirements=false; //for require dependencies within page-specific files
 
 
 	//PUBSUB============================================================================================================
@@ -31,12 +32,12 @@
 	//request couchdb show
 	app.hitShow=function(show){
 
-		var namespace=show.split('.')[0],//root part of show name, minus the .html
-			requireArray=['text!'+this.host+this.pathShow+show],
+		var namespace=show.split('.')[0], //root part of show name, minus the .html
+			requireArray=['text!/spendder/_design/spendder/_show/'+show],
 			callback=null; //page init function to fire depending on if code has already been loaded
 
-		if(!SPNDR.page[namespace]){
-			requireArray.push('scripts/logic/'+namespace+'.js');
+		if(!SPNDR.page[namespace]){ //if we haven't already loaded this file
+			requireArray=requireArray.concat(['scripts/logic/'+namespace+'.js']);
 			callback='init';
 		}
 		else{
@@ -44,21 +45,40 @@
 		}
 
 		require(requireArray,function(html){
-			that.publish({
-				show:show,
-				response:html,
-				callback:SPNDR.page[namespace][callback]
-			},'showReceipt'); //----------------------------------------------------------------------------------->
+
+			var publish=function(){
+					that.publish({
+						show:show,
+						response:html,
+						callback:SPNDR.page[namespace][callback]
+					},'showReceipt'); //--------------------------------------------------------------------------->
+				},
+				poll; //polling interval for requires within page-specific files
+
+			//Branching below accounts for cases in which supporting JS file itself includes a require call - in these
+			//cases nested require is set to true on file download, and false again at bottom of require's callback
+			if(!app.waitOnRequirements){publish()}
+			else{
+				poll=setInterval(function(){
+					if(!app.waitOnRequirements){
+						publish();
+						clearInterval(poll);
+					}
+				},100);
+			}
+
 		});
 	}.bind(app);
+
 	//browser url and history management
 	app.manageHistory=function(obj){
 		window.history.pushState(null,'',obj.show);
 	};
+
 	//display the couchdb's response to our show request - todo: combine with hitShow if nothing else depends on response
 	app.renderShow=function(obj){
 		$('#content').html(obj.response);
-		obj.callback();
+		obj.callback(); //init or setup
 	};
 
 	//setup
