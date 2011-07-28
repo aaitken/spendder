@@ -21,8 +21,8 @@
 		//init
 		this.subscribe(this.setup,'init');
 		//showReceipt
-		this.subscribe(this.manageHistory,'showReceipt');
 		this.subscribe(this.renderShow,'showReceipt');
+		this.subscribe(this.updateHistory,'showReceipt');
 		//showRequest
 		this.subscribe(this.hitShow,'showRequest');
 	};
@@ -30,10 +30,10 @@
 	//METHODS===========================================================================================================
 
 	//request couchdb show
-	app.hitShow=function(show){
+	app.hitShow=function(obj){
 
-		var namespace=show.split('.')[0], //root part of show name, minus the .html
-			requireArray=['text!/spendder/_design/spendder/_show/'+show],
+		var namespace=obj.show.split('.')[0], //root part of show name, minus the .html
+			requireArray=['text!/spendder/_design/spendder/_show/'+obj.show],
 			callback=null; //page init function to fire depending on if code has already been loaded
 
 		if(!SPNDR.page[namespace]){ //if we haven't already loaded this file
@@ -48,7 +48,8 @@
 
 			var publish=function(){
 					that.publish({
-						show:show,
+						show:obj.show,
+						history:obj.history,
 						response:html,
 						callback:SPNDR.page[namespace][callback]
 					},'showReceipt'); //--------------------------------------------------------------------------->
@@ -71,8 +72,8 @@
 	}.bind(app);
 
 	//browser url and history management
-	app.manageHistory=function(obj){
-		window.history.pushState(null,'',obj.show);
+	app.updateHistory=function(obj){
+		if(obj.history){window.history.pushState(null,'',obj.show)}
 	};
 
 	//display the couchdb's response to our show request - todo: combine with hitShow if nothing else depends on response
@@ -86,21 +87,19 @@
 
 		//listener setup for clicks on els with data-show, publish the attribute's value
 		$('a[data-show]').live('click',function(e){
-			that.publish($(e.target).attr('data-show'),'showRequest'); //------------------------------------------>
+			that.publish({
+				show:$(e.target).attr('data-show'),
+				history:true
+			},'showRequest'); //------------------------------------------>
 		});
 
-		//browser back and forward buttons - by the time this fires, location has been changed
-		this.manageHistory({show:'index.html'});
-		(function(){
-			var i=0;
-			window.onpopstate=function(e){
-				i++;
-				if(i>1){ //because chrome is firing this on initial page load, which we don't want
-					var loc=window.location.href.split('/').pop();
-					that.publish(loc,'showRequest'); //------------------------------------------------------------>
-				}
-			};
-		}());
+		//history management - init param = function to fire on popstate
+		SPNDR.scaffolding.history.init(function(){debugger;
+			that.publish({
+				show:window.location.href.split('/').pop(),
+				history:false
+			},'showRequest'); //---------------------------------->
+		});
 
 	}.bind(app);
 

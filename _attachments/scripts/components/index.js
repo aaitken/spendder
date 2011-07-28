@@ -5,7 +5,7 @@ require([
 	'utils/mod-formToJson',
 	'scaffolding/mod-pubSub',
 	'utils/mod-augmentJson',
-	'scaffolding/mod-history',
+	'scaffolding/mod-histMan',
 
 	//css
 	//'text!/spendder/_design/spendder/styles/_app.css',
@@ -17,7 +17,7 @@ require([
 
 ],
 //callback
-function(formToJson,pubSub,augmentJson,history/*,css*/){
+function(formToJson,pubSub,augmentJson,histMan/*,css*/){
 
 	//Namespaces
 	SPNDR.namespace('utils');
@@ -26,7 +26,7 @@ function(formToJson,pubSub,augmentJson,history/*,css*/){
 	//Assignments
 	SPNDR.utils.formToJson=formToJson;
 	SPNDR.utils.augmentJson=augmentJson;
-	SPNDR.scaffolding.history=history;
+	SPNDR.scaffolding.history=histMan;
 	SPNDR.scaffolding.pubSub=pubSub;
 
 	//2nd 'set' of script requests
