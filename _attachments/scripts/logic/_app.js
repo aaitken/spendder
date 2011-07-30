@@ -9,6 +9,7 @@
 	app.host='http://127.0.0.1:5984/';
 	app.pathShow='spendder/_design/spendder/_show/';
 	app.waitOnRequirements=false; //for require dependencies within page-specific files
+	app.jsCache={};
 
 
 	//PUBSUB============================================================================================================
@@ -90,16 +91,19 @@
 			that.publish({
 				show:$(e.target).attr('data-show'),
 				history:true
-			},'showRequest'); //------------------------------------------>
+			},'showRequest'); //----------------------------------------------------------------------------------->
 		});
 
 		//history management - init param = function to fire on popstate
-		SPNDR.scaffolding.history.init(function(){debugger;
+		SPNDR.scaffolding.history.init(function(){
 			that.publish({
 				show:window.location.href.split('/').pop(),
 				history:false
-			},'showRequest'); //---------------------------------->
+			},'showRequest'); //----------------------------------------------------------------------------------->
 		});
+
+		//
+		#('logout').bind('click')
 
 	}.bind(app);
 

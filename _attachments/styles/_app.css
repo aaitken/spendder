@@ -1,1 +1,8 @@
-.logged-out nav a{color:red}
+.logged-in nav ul {
+  display: block; }
+
+.logged-out nav ul {
+  display: none; }
+
+.display-no {
+  display: none; }

@@ -4,16 +4,21 @@
 	<title>spendder</title>
 	<meta charset="UTF-8">
 	<script data-main="scripts/components/index" src="scripts/components/require.js"></script>
+	<link rel="stylesheet" href="/spendder/_design/spendder/styles/_mobile-reset.css">
 	<link rel="stylesheet" href="/spendder/_design/spendder/styles/_app.css">
 </head>
 <body class="logged-out">
 <header>
 	<h1>spendder</h1>
 	<nav>
-		<a data-show="info.html">Info</a>
-		<a>Budget</a>
-		<a>Transactions</a>
-		<a>Partners</a>
+		<h1 class="display-no"><a>Menu</a></h1>
+		<ul>
+			<li><a>Budget</a></li>
+			<li><a>Spends</a></li>
+			<li><a>Partners</a></li>
+			<li id="info"><a data-show="info.html">Info</a></li>
+			<li><a id="logout">Log Out</a></li>
+		</ul>
 	</nav>
 </header>
 <div id="content"><!--catching container - this content is duped under the templates dir-->

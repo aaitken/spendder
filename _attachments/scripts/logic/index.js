@@ -26,7 +26,8 @@
 	//METHODS===========================================================================================================
 	//handleReceive: receipt of authorization cookie request
 	pgIndex.handleReceive=function(responseText){
-		alert(responseText);
+		$('body')[0].className='logged-in';
+		$('nav h1').html(app.jsCache.navHdrHtml);
 	}
 	//handleSubmit: two-part authorization request
 	pgIndex.handleSubmit=function(e){
@@ -48,10 +49,20 @@
 
 	//setup: Dom setup
 	pgIndex.setup=function(){
+
 		//add listener > publisher for transaction submits
 		$('form[name=login]').bind('submit',function(e){
 			that.publish(e,'submit'); //--------------------------------------------------------------------------->
 		});
+
+		//adjust nav based on user's logged-in status
+		if($('body').hasClass('logged-out')){
+			var $navHdr=$('nav h1');
+			app.jsCache.navHdrHtml=$navHdr.html(); //store off default logged-in html for re-insertion
+			$navHdr.html($('#info').html());
+			$navHdr.removeClass('display-no');
+		}
+		//else
 	};
 
 	//INIT==============================================================================================================
