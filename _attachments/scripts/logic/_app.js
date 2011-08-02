@@ -85,15 +85,19 @@
 				type:obj.mthd,
 				url:that.host+'_session',
 				success:function(){
-					alert('logged out');
+					that.publish({
+						url:'index.html', //session api, for example, only has a single url
+						api:'show',
+						history:true
+					},'urlRequest'); //---------------------------------------------------------------------------->
 				},
 				error:function(xhr,error){}
 			});
 		};
 
 		switch(obj.api){
-			case 'show':show(obj);
-			case 'session':session(obj);
+			case 'show':show(obj);break;
+			case 'session':session(obj);break;
 			default: return;
 		}
 

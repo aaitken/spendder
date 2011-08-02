@@ -38,7 +38,7 @@
 			data:'name='+$('input[name=name]').val()+'&password='+$('input[name=password]').val(), //NOT json
 			url:'http://127.0.0.1:5984/_session',
 			success:function(body){
-				that.publish(body,'receive'); //----------------------------------------------------------->
+				that.publish(body,'receive'); //------------------------------------------------------------------->
 			},
 			error:function(xhr,error){
 				if(error==='error'){alert(xhr.responseText)}
@@ -49,6 +49,11 @@
 
 	//setup: Dom setup
 	pgIndex.setup=function(){
+
+		//if we're not logged in change body class to 'logged-out'
+		if(!utils.cookies.getCookie('AuthSession')){
+			$('body')[0].className='logged-out';
+		}
 
 		//add listener > publisher for transaction submits
 		$('form[name=login]').bind('submit',function(e){
