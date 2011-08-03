@@ -1,37 +1,45 @@
-(function(){ //for alias scope
+//FIRST-LOAD INITIALIZATION CODE========================================================================================
 
-	//NAMESPACE + ALIASES===============================================================================================
-	SPNDR.namespace('ctrl.index');
+//Namespace
+SPNDR.namespace('ctrl.index'); //on load
+
+//Init (fire this only after app, utils, ctrl[page], and view[page] have been received)
+SPNDR.ctrl.index.init=function(){
+	this.config(); //define methods/props using aliases
+	this.pubSub(); //set up publisher and subscriptions
+	this.publish(null,'init'); //---------------------------------------------------------------------------------->
+};
+
+
+SPNDR.ctrl.index.config=function(){
+
+	//Aliases
 	var app=SPNDR.app,
-		ctrlIndex=SPNDR.ctrl.index,
-		that=ctrlIndex,
+		that=this, //re-usable reference for inner function convention
+		viewIndex=SPNDR.view.index,
 		utils=SPNDR.utils;
 
 	//PUBSUB============================================================================================================
-	ctrlIndex.pubSub=function(){
 
-		//make SPNDR.page.transaction a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(ctrlIndex);
+	this.pubSub=function(){
 
-		//SPNDR.page.signup subscribes its listeners to... <-----------------------------------------------listeners
+		//make the namespace a publisher (who can 'subscribe' listeners)
+		SPNDR.scaffolding.pubSub.makePublisher(this);
+
+		//namespace subscribes its listeners to... <-------------------------------------------------------listeners
 		//init
 		this.subscribe(this.setup,'init');
 		//receive
-		this.subscribe(this.handleReceive,'receive');
+		this.subscribe(viewIndex.handleReceive,'receive');
 		//submit
 		this.subscribe(this.handleSubmit,'submit');
 
 	};
 
 	//METHODS===========================================================================================================
-	//handleReceive: receipt of authorization cookie request
-	ctrlIndex.handleReceive=function(responseText){
-		$('body')[0].className='logged-in';
-		$('nav h1').html(app.jsCache.navHdrHtml);
-	}
-	//handleSubmit: two-part authorization request
-	ctrlIndex.handleSubmit=function(e){
 
+	//handleSubmit: two-part authorization request
+	this.handleSubmit=function(e){
 		e.preventDefault();
 		$.ajax({
 			type:'POST',
@@ -48,32 +56,11 @@
 	};
 
 	//setup: Dom setup
-	ctrlIndex.setup=function(){
-
-		//if we're not logged in change body class to 'logged-out'
-		if(!utils.cookies.getCookie('AuthSession')){
-			$('body')[0].className='logged-out';
-		}
+	this.setup=function(){
 
 		//add listener > publisher for transaction submits
 		$('form[name=login]').bind('submit',function(e){
 			that.publish(e,'submit'); //--------------------------------------------------------------------------->
 		});
-
-		//adjust nav based on user's logged-in status
-		if($('body').hasClass('logged-out')){
-			var $navHdr=$('nav h1');
-			app.jsCache.navHdrHtml=$navHdr.html(); //store off default logged-in html for re-insertion
-			$navHdr.html($('#info').html());
-			$navHdr.removeClass('display-no');
-		}
-		//else
 	};
-
-	//INIT==============================================================================================================
-	//init: fires for first script load
-	ctrlIndex.init=function(){
-		this.pubSub(); //set up publisher and subscriptions
-		this.publish(null,'init'); //------------------------------------------------------------------------------>
-	};
-}());
+};
