@@ -38,13 +38,13 @@ function(formToJson,pubSub,augmentJson,histMan,cookies/*,css*/){
 	//callback - 3rd 'set' of script requests
 	function(){
 		require([
-			'scripts/logic/index.js'
+			'scripts/logic/ctrl.index.js'
 		],
 		function(){
 			//callback - domready
 			require.ready(function(){
 				SPNDR.app.init();
-				SPNDR.page.index.init();
+				SPNDR.ctrl.index.init();
 			});
 		});
 	});

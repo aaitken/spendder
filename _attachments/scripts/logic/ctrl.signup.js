@@ -3,16 +3,16 @@ require([
 ],function(){//provides alias scope
 
 	//NAMESPACE + ALIASES===============================================================================================
-	SPNDR.namespace('page.signup');
-	var pgSignup=SPNDR.page.signup,
-		that=pgSignup, //inner function reference mechanism for convention
+	SPNDR.namespace('ctrl.signup');
+	var ctrlSignup=SPNDR.ctrl.signup,
+		that=ctrlSignup, //inner function reference mechanism for convention
 		utils=SPNDR.utils;
 
 	//PUBSUB============================================================================================================
-	pgSignup.pubSub=function(){
+	ctrlSignup.pubSub=function(){
 
 		//make SPNDR.page.transaction a PUBLISHer (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(pgSignup);
+		SPNDR.scaffolding.pubSub.makePublisher(ctrlSignup);
 
 		//SPNDR.page.signup SUBSCRIBEs its listeners to...
 		//init
@@ -27,12 +27,12 @@ require([
 	//METHODS===========================================================================================================
 
 	//handleReceive
-	pgSignup.handleReceive=function(responseText){
+	ctrlSignup.handleReceive=function(responseText){
 		alert(responseText);
 	};
 
 	//handleSubmit
-	pgSignup.handleSubmit=function(e){
+	ctrlSignup.handleSubmit=function(e){
 
 			var secondRequest=function(salt){
 
@@ -74,7 +74,7 @@ require([
 	};
 
 	//setup: Dom setup
-	pgSignup.setup=function(){
+	ctrlSignup.setup=function(){
 		//add listener > publisher for signup submits
 		$('form[name=signup]').bind('submit',function(e){
 			that.publish(e,'submit'); //--------------------------------------------------------------------------->
@@ -83,10 +83,10 @@ require([
 
 	//INIT==============================================================================================================
 	//init: fires for first script load
-	pgSignup.init=function(){
+	ctrlSignup.init=function(){
 		this.pubSub(); //set up publisher and subscriptions
 		this.publish(null,'init');
-	}.bind(pgSignup);
+	}.bind(ctrlSignup);
 
 	SPNDR.app.waitOnRequirements=false; //all required scripts have been loaded.
 });

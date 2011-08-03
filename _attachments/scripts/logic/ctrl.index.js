@@ -1,17 +1,17 @@
 (function(){ //for alias scope
 
 	//NAMESPACE + ALIASES===============================================================================================
-	SPNDR.namespace('page.index');
+	SPNDR.namespace('ctrl.index');
 	var app=SPNDR.app,
-		pgIndex=SPNDR.page.index,
-		that=pgIndex,
+		ctrlIndex=SPNDR.ctrl.index,
+		that=ctrlIndex,
 		utils=SPNDR.utils;
 
 	//PUBSUB============================================================================================================
-	pgIndex.pubSub=function(){
+	ctrlIndex.pubSub=function(){
 
 		//make SPNDR.page.transaction a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(pgIndex);
+		SPNDR.scaffolding.pubSub.makePublisher(ctrlIndex);
 
 		//SPNDR.page.signup subscribes its listeners to... <-----------------------------------------------listeners
 		//init
@@ -25,12 +25,12 @@
 
 	//METHODS===========================================================================================================
 	//handleReceive: receipt of authorization cookie request
-	pgIndex.handleReceive=function(responseText){
+	ctrlIndex.handleReceive=function(responseText){
 		$('body')[0].className='logged-in';
 		$('nav h1').html(app.jsCache.navHdrHtml);
 	}
 	//handleSubmit: two-part authorization request
-	pgIndex.handleSubmit=function(e){
+	ctrlIndex.handleSubmit=function(e){
 
 		e.preventDefault();
 		$.ajax({
@@ -48,7 +48,7 @@
 	};
 
 	//setup: Dom setup
-	pgIndex.setup=function(){
+	ctrlIndex.setup=function(){
 
 		//if we're not logged in change body class to 'logged-out'
 		if(!utils.cookies.getCookie('AuthSession')){
@@ -72,7 +72,7 @@
 
 	//INIT==============================================================================================================
 	//init: fires for first script load
-	pgIndex.init=function(){
+	ctrlIndex.init=function(){
 		this.pubSub(); //set up publisher and subscriptions
 		this.publish(null,'init'); //------------------------------------------------------------------------------>
 	};

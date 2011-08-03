@@ -1,15 +1,15 @@
 (function(){ //for alias scope
 	//NAMESPACE + ALIASES===============================================================================================
-	SPNDR.namespace('page.info');
+	SPNDR.namespace('ctrl.info');
 	var app=SPNDR.app,
-		pgInfo=SPNDR.page.info,
-		that=pgInfo;
+		ctrlInfo=SPNDR.ctrl.info,
+		that=ctrlInfo;
 
 	//PUBSUB============================================================================================================
-	pgInfo.pubSub=function(){
+	ctrlInfo.pubSub=function(){
 
 		//make SPNDR.page.transaction a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(pgInfo);
+		SPNDR.scaffolding.pubSub.makePublisher(ctrlInfo);
 
 		//SPNDR.page.signup subscribes its listeners to... <-----------------------------------------------listeners
 		//init
@@ -17,15 +17,15 @@
 	};
 
 	//METHODS===========================================================================================================
-	pgInfo.setup=function(){
+	ctrlInfo.setup=function(){
 
 	};
 
 
 	//INIT==============================================================================================================
 	//init: fires for first script load
-	pgInfo.init=function(){
+	ctrlInfo.init=function(){
 		this.pubSub(); //set up publisher and subscriptions
 		this.publish(null,'init'); //------------------------------------------------------------------------------>
-	}.bind(pgInfo);
+	}.bind(ctrlInfo);
 }());

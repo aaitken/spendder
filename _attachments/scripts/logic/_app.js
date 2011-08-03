@@ -46,8 +46,8 @@
 				requireArray=['text!/spendder/_design/spendder/_show/'+obj.url],
 				callback=null; //page init function to fire depending on if code has already been loaded
 
-			if(!SPNDR.page[namespace]){ //if we haven't already loaded this file
-				requireArray.push('scripts/logic/'+namespace+'.js');
+			if(!SPNDR.ctrl[namespace]){ //if we haven't already loaded this file
+				requireArray.push('scripts/logic/ctrl.'+namespace+'.js');
 				callback='init';
 			}
 			else{
@@ -61,7 +61,7 @@
 							url:obj.url,
 							history:obj.history,
 							response:html,
-							callback:SPNDR.page[namespace][callback]
+							callback:SPNDR.ctrl[namespace][callback]
 						},'showReceipt'); //----------------------------------------------------------------------->
 					},
 					poll; //polling interval for requires within page-specific files
