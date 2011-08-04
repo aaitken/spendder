@@ -33,6 +33,7 @@ function(formToJson,pubSub,augmentJson,histMan,cookies/*,css*/){
 
 	//2nd 'set' of script requests
 	require([
+		'scripts/logic/props.js',
 		'scripts/logic/_app.js'
 	],
 	//callback - 3rd 'set' of script requests
@@ -44,7 +45,7 @@ function(formToJson,pubSub,augmentJson,histMan,cookies/*,css*/){
 		function(){
 			//callback - domready
 			require.ready(function(){
-				SPNDR.app.init();
+				SPNDR.ctrl.app.init();
 				SPNDR.ctrl.index.init();
 				SPNDR.view.index.init();
 			});

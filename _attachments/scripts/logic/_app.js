@@ -1,22 +1,27 @@
-(function(){ //for alias scope
+//FIRST-LOAD INITIALIZATION CODE========================================================================================
 
-	//NAMESPACE + ALIAS=================================================================================================
-	SPNDR.namespace('app');
-	var app=SPNDR.app,
-		that=app;
+//Namespace
+SPNDR.namespace('ctrl.app');
 
-	//PROPERTIES========================================================================================================
-	app.host='http://127.0.0.1:5984/';
-	app.path='spendder/_design/spendder/';
-	app.waitOnRequirements=false; //for require dependencies within page-specific files
-	app.jsCache={};
+//Init
+SPNDR.ctrl.app.init=function(){
+	this.config();
+	this.pubSub();
+	this.publish(null,'init'); //---------------------------------------------------------------------------------->
+};
 
+
+SPNDR.ctrl.app.config=function(){
+
+	//Aliases
+	var that=this,
+		props=SPNDR.props;
 
 	//PUBSUB============================================================================================================
-	app.pubSub=function(){
+	this.pubSub=function(){
 
 		//make SPNDR.app a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(app);
+		SPNDR.scaffolding.pubSub.makePublisher(this);
 
 		//SPNDR.app subscribes its listeners to... <-------------------------------------------------------listeners
 		//init
@@ -34,7 +39,7 @@
 	* hit a couchdb api url
 	* obj keys: url, mthd, history
 	*/
-	app.hitUrl=function(obj){
+	this.hitUrl=function(obj){
 
 		//private functions for hitting the couchdb apis of same name
 		var show,
@@ -68,10 +73,10 @@
 
 				//Branching below accounts for cases in which supporting JS file itself includes a require call - in these
 				//cases nested require is set to true on file download, and false again at bottom of require's callback
-				if(!app.waitOnRequirements){publish()}
+				if(!props.waitOnRequirements){publish()}
 				else{
 					poll=setInterval(function(){
-						if(!app.waitOnRequirements){
+						if(!props.waitOnRequirements){
 							publish();
 							clearInterval(poll);
 						}
@@ -83,7 +88,7 @@
 		session=function(obj){
 			$.ajax({
 				type:obj.mthd,
-				url:that.host+'_session',
+				url:props.host+'_session',
 				success:function(){
 					that.publish({
 						url:'index.html', //session api, for example, only has a single url
@@ -101,21 +106,21 @@
 			default: return;
 		}
 
-	}.bind(app);
+	}.bind(this);
 
 	//browser url and history management
-	app.updateHistory=function(obj){
+	this.updateHistory=function(obj){
 		if(obj.history){window.history.pushState(null,'',obj.url)}
 	};
 
 	//display the couchdb's response to our show request - todo: combine with hitShow if nothing else depends on response
-	app.renderShow=function(obj){
+	this.renderShow=function(obj){
 		$('#content').html(obj.response);
 		obj.callback(); //init or setup
 	};
 
 	//setup
-	app.setup=function(){
+	this.setup=function(){
 
 		//listener setup for clicks on els with data-url, publish the attribute's value
 		$('a[data-api]').live('click',function(e){
@@ -137,11 +142,6 @@
 			},'urlRequest'); //----------------------------------------------------------------------------------->
 		});
 
-	}.bind(app);
+	}.bind(this);
 
-	//INIT==============================================================================================================
-	app.init=function(){
-		this.pubSub();
-		this.publish(null,'init'); //------------------------------------------------------------------------------>
-	};
-}());
+};

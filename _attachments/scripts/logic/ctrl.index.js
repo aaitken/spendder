@@ -14,7 +14,7 @@ SPNDR.ctrl.index.init=function(){
 SPNDR.ctrl.index.config=function(){
 
 	//Aliases
-	var app=SPNDR.app,
+	var ctrlApp=SPNDR.ctrl.app,
 		that=this, //re-usable reference for inner function convention
 		viewIndex=SPNDR.view.index,
 		utils=SPNDR.utils;
