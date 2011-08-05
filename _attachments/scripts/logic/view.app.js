@@ -17,14 +17,14 @@ SPNDR.view.app.config=function(){
 	var ctrlApp=SPNDR.ctrl.app;
 
 	//PUBSUB============================================================================================================
-	this.pubSub=function(){
 
-		//make SPNDR.app a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(this);
+	//make SPNDR.app a publisher (who can 'subscribe' listeners)
+	SPNDR.scaffolding.pubSub.makePublisher(this);
+
+	this.pubSub=function(){
 
 		//SPNDR.app subscribes its listeners to... <-------------------------------------------------------listeners
 		this.subscribe(ctrlApp.pubSub2,'init'); //make methods available to controller
-
 	};
 
 	//METHODS===========================================================================================================

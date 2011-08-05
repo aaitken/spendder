@@ -6,23 +6,35 @@ SPNDR.namespace('ctrl.info');
 //Init (fire this only after app, utils, ctrl[page], and view[page] have been received)
 SPNDR.ctrl.info.init=function(){
 	this.config(); //define methods/props using aliases (now ready)
-	this.pubSub(); //set up publisher and subscriptions
-	//this.publish(null,'init'); //---------------------------------------------------------------------------------->
+	this.pubSub1(); //set up publisher and subscriptions
+	this.publish(null,'init'); //---------------------------------------------------------------------------------->
 }.bind(SPNDR.ctrl.info);
 
 
 SPNDR.ctrl.info.config=function(){
 
 	//Aliases
-	//
+	var viewInfo=SPNDR.view.info;
 
-	this.pubSub=function(){
+	//PUBSUB============================================================================================================
 
-		//make SPNDR.page.transaction a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(this);
+	//make this a publisher (who can 'subscribe' listeners)
+	SPNDR.scaffolding.pubSub.makePublisher(this);
 
-		//SPNDR.page.signup subscribes its listeners to... <-----------------------------------------------listeners
+	//subscribe ctrl methods
+	this.pubSub1=function(){
+
+		//SPNDR.ctrl subscribes its listeners to... <------------------------------------------------------listeners
+		//init
+		this.subscribe(viewInfo.init,'init')
 	};
+
+	//subscribe view methods
+	this.pubSub2=function(){
+		return;
+	};
+
+	//METHODS===========================================================================================================
 
 	this.setup=function(){
 		return;
