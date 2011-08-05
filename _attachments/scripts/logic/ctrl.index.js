@@ -6,9 +6,9 @@ SPNDR.namespace('ctrl.index'); //on load
 //Init (fire this only after app, utils, ctrl[page], and view[page] have been received)
 SPNDR.ctrl.index.init=function(){
 	this.config(); //define methods/props using aliases
-	this.pubSub(); //set up publisher and subscriptions
+	this.pubSub1(); //set up publisher and subscriptions
 	this.publish(null,'init'); //---------------------------------------------------------------------------------->
-};
+}.bind(SPNDR.ctrl.index);
 
 
 SPNDR.ctrl.index.config=function(){
@@ -21,21 +21,25 @@ SPNDR.ctrl.index.config=function(){
 
 	//PUBSUB============================================================================================================
 
-	this.pubSub=function(){
+	//make the namespace a publisher (who can 'subscribe' listeners)
+	SPNDR.scaffolding.pubSub.makePublisher(this);
 
-		//make the namespace a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(this);
+	this.pubSub1=function(){
 
-		//namespace subscribes its listeners to... <-------------------------------------------------------listeners
+		//namespace subscribes its listeners to... <--------------------------------------------controller listeners
 		//init
 		this.subscribe(this.setup,'init');
 		this.subscribe(viewIndex.init,'init');
-		//receive
-		this.subscribe(viewIndex.handleReceive,'receive');
 		//submit
 		this.subscribe(this.handleSubmit,'submit');
-
 	};
+
+	this.pubSub2=function(){
+
+		//namespace subscribes its listeners to... <--------------------------------------------------view listeners
+		//receive
+		this.subscribe(viewIndex.handleReceive,'receive');
+	}.bind(this);
 
 	//METHODS===========================================================================================================
 

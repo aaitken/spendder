@@ -22,13 +22,14 @@ SPNDR.view.index.config=function(){
 
 	//PUBSUB============================================================================================================
 
-	this.pubSub=function(){
+	//make the namespace a publisher (who can 'subscribe' listeners)
+	SPNDR.scaffolding.pubSub.makePublisher(this);
 
-		//make the namespace a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(this);
+	this.pubSub=function(){
 
 		//namespace subscribes its listeners to... <-------------------------------------------------------listeners
 		//init
+		this.subscribe(ctrlIndex.pubSub2,'init');
 		this.subscribe(this.setup,'init');
 
 	};
@@ -38,7 +39,7 @@ SPNDR.view.index.config=function(){
 	//receipt of authorization cookie request
 	this.handleReceive=function(){
 		$('body')[0].className='logged-in';
-		$('nav h1').html(ctrlApp.jsCache.navHdrHtml);
+		$('nav h1').html(props.jsCache.navHdrHtml);
 	};
 
 	this.setup=function(){

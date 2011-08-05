@@ -1,48 +1,49 @@
 require([
 	'scripts/components/utils/sha1.js'
-],function(){//provides alias scope
+],function(){
 
 	//NAMESPACE + ALIASES===============================================================================================
 	SPNDR.namespace('ctrl.signup');
 
 	SPNDR.ctrl.signup.init=function(){
 		this.config();
-		this.pubSub();
+		this.pubSub1();
 		this.publish(null,'init'); //------------------------------------------------------------------------------>
-	};
+	}.bind(SPNDR.ctrl.signup);
 
 
 	SPNDR.ctrl.signup.config=function(){
 
 		//Aliases
 		var that=this,
+			viewSignup=SPNDR.view.signup,
 			utils=SPNDR.utils;
 
 		//PUBSUB========================================================================================================
-		ctrlSignup.pubSub=function(){
 
-			//make SPNDR.page.transaction a PUBLISHer (who can 'subscribe' listeners)
-			SPNDR.scaffolding.pubSub.makePublisher(ctrlSignup);
+		//make SPNDR.page.transaction a PUBLISHer (who can 'subscribe' listeners)
+		SPNDR.scaffolding.pubSub.makePublisher(this);
+
+		this.pubSub1=function(){
 
 			//SPNDR.page.signup SUBSCRIBEs its listeners to...
 			//init
 			this.subscribe(this.setup,'init');
-			//receive (form response)
-			this.subscribe(this.handleReceive,'receive');
+			this.subscribe(viewSignup.init,'init');
 			//submit (form submission)
 			this.subscribe(this.handleSubmit,'submit');
-
 		};
+
+		this.pubSub2=function(){
+
+			//receive (form response)
+			this.subscribe(viewSignup.handleReceive,'receive');
+		}.bind(this);
 
 		//METHODS=======================================================================================================
 
-		//handleReceive
-		ctrlSignup.handleReceive=function(responseText){
-			alert(responseText);
-		};
-
 		//handleSubmit
-		ctrlSignup.handleSubmit=function(e){
+		this.handleSubmit=function(e){
 
 				var secondRequest=function(salt){
 
@@ -84,7 +85,7 @@ require([
 		};
 
 		//setup: Dom setup
-		ctrlSignup.setup=function(){
+		this.setup=function(){
 			//add listener > publisher for signup submits
 			$('form[name=signup]').bind('submit',function(e){
 				that.publish(e,'submit'); //----------------------------------------------------------------------->

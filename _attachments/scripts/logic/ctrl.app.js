@@ -80,7 +80,7 @@ SPNDR.ctrl.app.config=function(){
 							url:obj.url,
 							history:obj.history,
 							response:html,
-							callback:SPNDR.ctrl[namespace][callback]
+							callback:SPNDR.ctrl[namespace][callback] //ctr.init fires view.init
 						},'showReceipt'); //----------------------------------------------------------------------->
 					},
 					poll; //polling interval for requires within page-specific files
