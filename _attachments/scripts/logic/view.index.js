@@ -8,7 +8,7 @@ SPNDR.view.index.init=function(){
 	this.config(); //define methods/props using aliases (now ready)
 	this.pubSub(); //set up publisher and subscriptions
 	this.publish(null,'init'); //---------------------------------------------------------------------------------->
-};
+}.bind(SPNDR.view.index);
 
 
 SPNDR.view.index.config=function(){

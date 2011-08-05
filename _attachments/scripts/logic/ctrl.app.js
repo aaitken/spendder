@@ -6,7 +6,7 @@ SPNDR.namespace('ctrl.app');
 //Init
 SPNDR.ctrl.app.init=function(){
 	this.config();
-	this.pubSub();
+	this.pubSub1();
 	this.publish(null,'init'); //---------------------------------------------------------------------------------->
 };
 
@@ -15,23 +15,34 @@ SPNDR.ctrl.app.config=function(){
 
 	//Aliases
 	var that=this,
-		props=SPNDR.props;
+		props=SPNDR.props,
+		viewApp=SPNDR.view.app;
 
 	//PUBSUB============================================================================================================
-	this.pubSub=function(){
 
-		//make SPNDR.app a publisher (who can 'subscribe' listeners)
-		SPNDR.scaffolding.pubSub.makePublisher(this);
+	//make SPNDR.app a publisher (who can 'subscribe' listeners)
+	SPNDR.scaffolding.pubSub.makePublisher(this);
 
-		//SPNDR.app subscribes its listeners to... <-------------------------------------------------------listeners
+	//subscribe ctrl methods and immediately-available view.init
+	this.pubSub1=function(){
+
+		//SPNDR.app subscribes listeners to... <------------------------------------------------controller listeners
 		//init
 		this.subscribe(this.setup,'init');
+		this.subscribe(viewApp.init,'init'); //init = only view method immediately available, it gives others
 		//showReceipt
-		this.subscribe(this.renderShow,'showReceipt');
 		this.subscribe(this.updateHistory,'showReceipt');
 		//urlRequest
 		this.subscribe(this.hitUrl,'urlRequest');
 	};
+	
+	//subscribe view methods
+	this.pubSub2=function(){
+
+		//SPNDR.app subscribes listeners to... <------------------------------------------------------view listeners
+		//showReceipt
+		this.subscribe(viewApp.renderShow,'showReceipt'); //doesn't exist until viewApp.init fires
+	}.bind(this); //subscribed to view.init
 
 	//METHODS===========================================================================================================
 
@@ -52,7 +63,10 @@ SPNDR.ctrl.app.config=function(){
 				callback=null; //page init function to fire depending on if code has already been loaded
 
 			if(!SPNDR.ctrl[namespace]){ //if we haven't already loaded this file
-				requireArray.push('scripts/logic/ctrl.'+namespace+'.js');
+				requireArray=requireArray.concat([
+					'scripts/logic/ctrl.'+namespace+'.js',
+					'scripts/logic/view.'+namespace+'.js'
+				]);
 				callback='init';
 			}
 			else{
@@ -106,17 +120,11 @@ SPNDR.ctrl.app.config=function(){
 			default: return;
 		}
 
-	}.bind(this);
+	};
 
 	//browser url and history management
 	this.updateHistory=function(obj){
 		if(obj.history){window.history.pushState(null,'',obj.url)}
-	};
-
-	//display the couchdb's response to our show request - todo: combine with hitShow if nothing else depends on response
-	this.renderShow=function(obj){
-		$('#content').html(obj.response);
-		obj.callback(); //init or setup
 	};
 
 	//setup
@@ -142,6 +150,5 @@ SPNDR.ctrl.app.config=function(){
 			},'urlRequest'); //----------------------------------------------------------------------------------->
 		});
 
-	}.bind(this);
-
+	};
 };

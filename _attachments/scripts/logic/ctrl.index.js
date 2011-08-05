@@ -29,6 +29,7 @@ SPNDR.ctrl.index.config=function(){
 		//namespace subscribes its listeners to... <-------------------------------------------------------listeners
 		//init
 		this.subscribe(this.setup,'init');
+		this.subscribe(viewIndex.init,'init');
 		//receive
 		this.subscribe(viewIndex.handleReceive,'receive');
 		//submit
