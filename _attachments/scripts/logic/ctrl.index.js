@@ -1,16 +1,4 @@
-//FIRST-LOAD INITIALIZATION CODE========================================================================================
-
-//Namespace
-SPNDR.namespace('ctrl.index'); //on load
-
-//Init (fire this only after app, utils, ctrl[page], and view[page] have been received)
-SPNDR.ctrl.index.init=function(){
-	this.config(); //define methods/props using aliases
-	this.pubSub1(); //set up publisher and subscriptions
-	this.publish(null,'init'); //---------------------------------------------------------------------------------->
-}.bind(SPNDR.ctrl.index);
-
-
+SPNDR.init('ctrl.index'); //Namespace with init function, which publishes when ctrl and view files are down ------->
 SPNDR.ctrl.index.config=function(){
 
 	//Aliases
@@ -21,22 +9,14 @@ SPNDR.ctrl.index.config=function(){
 
 	//PUBSUB============================================================================================================
 
-	//make the namespace a publisher (who can 'subscribe' listeners)
-	SPNDR.scaffolding.pubSub.makePublisher(this);
-
-	this.pubSub1=function(){
+	this.pubSub=function(){
 
 		//namespace subscribes its listeners to... <--------------------------------------------controller listeners
 		//init
 		this.subscribe(this.setup,'init');
-		this.subscribe(viewIndex.init,'init');
+		this.subscribe(viewIndex.setup,'init');
 		//submit
 		this.subscribe(this.handleSubmit,'submit');
-	};
-
-	this.pubSub2=function(){
-
-		//namespace subscribes its listeners to... <--------------------------------------------------view listeners
 		//receive
 		this.subscribe(viewIndex.handleReceive,'receive');
 	}.bind(this);

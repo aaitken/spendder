@@ -1,16 +1,4 @@
-//FIRST-LOAD INITIALIZATION CODE========================================================================================
-
-//Namespace
-SPNDR.namespace('ctrl.app');
-
-//Init
-SPNDR.ctrl.app.init=function(){
-	this.config();
-	this.pubSub1();
-	this.publish(null,'init'); //---------------------------------------------------------------------------------->
-};
-
-
+SPNDR.init('ctrl.app'); //Namespace with init function, which publishes when ctrl and view files are down --------->
 SPNDR.ctrl.app.config=function(){
 
 	//Aliases
@@ -20,28 +8,17 @@ SPNDR.ctrl.app.config=function(){
 
 	//PUBSUB============================================================================================================
 
-	//make SPNDR.app a publisher (who can 'subscribe' listeners)
-	SPNDR.scaffolding.pubSub.makePublisher(this);
-
 	//subscribe ctrl methods and immediately-available view.init
-	this.pubSub1=function(){
+	this.pubSub=function(){
 
-		//SPNDR.app subscribes listeners to... <------------------------------------------------controller listeners
+		//SPNDR.app subscribes listeners to... <---------------------------------------------------------- listeners
 		//init
 		this.subscribe(this.setup,'init');
-		this.subscribe(viewApp.init,'init'); //init = only view method immediately available, it gives others
 		//showReceipt
 		this.subscribe(this.updateHistory,'showReceipt');
+		this.subscribe(viewApp.renderShow,'showReceipt');
 		//urlRequest
 		this.subscribe(this.hitUrl,'urlRequest');
-	};
-	
-	//subscribe view methods
-	this.pubSub2=function(){
-
-		//SPNDR.app subscribes listeners to... <------------------------------------------------------view listeners
-		//showReceipt
-		this.subscribe(viewApp.renderShow,'showReceipt'); //doesn't exist until viewApp.init fires
 	}.bind(this); //subscribed to view.init
 
 	//METHODS===========================================================================================================
@@ -150,5 +127,5 @@ SPNDR.ctrl.app.config=function(){
 			},'urlRequest'); //----------------------------------------------------------------------------------->
 		});
 
-	};
+	}
 };
