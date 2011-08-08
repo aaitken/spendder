@@ -1,15 +1,7 @@
 //FIRST-LOAD INITIALIZATION CODE========================================================================================
 
-//Namespace
-SPNDR.namespace('ctrl.app');
-
-//Init
-SPNDR.ctrl.app.init=function(){
-	this.config();
-	this.pubSub1();
-	this.publish(null,'init'); //---------------------------------------------------------------------------------->
-};
-
+//Namespace and init
+SPNDR.setupInit('ctrl.app'); //------------------------------------------------------------------------------------>
 
 SPNDR.ctrl.app.config=function(){
 

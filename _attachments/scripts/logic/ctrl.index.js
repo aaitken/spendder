@@ -1,14 +1,7 @@
 //FIRST-LOAD INITIALIZATION CODE========================================================================================
 
-//Namespace
-SPNDR.namespace('ctrl.index'); //on load
-
-//Init (fire this only after app, utils, ctrl[page], and view[page] have been received)
-SPNDR.ctrl.index.init=function(){
-	this.config(); //define methods/props using aliases
-	this.pubSub1(); //set up publisher and subscriptions
-	this.publish(null,'init'); //---------------------------------------------------------------------------------->
-}.bind(SPNDR.ctrl.index);
+//Namespace and init
+SPNDR.setupInit('ctrl.index'); //---------------------------------------------------------------------------------->
 
 
 SPNDR.ctrl.index.config=function(){

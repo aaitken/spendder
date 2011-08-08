@@ -1,14 +1,7 @@
 //FIRST-LOAD INITIALIZATION CODE========================================================================================
 
-//Namespace
-SPNDR.namespace('view.signup');
-
-//Init (fire this only after app, utils, ctrl[page], and view[page] have been received)
-SPNDR.view.signup.init=function(){
-	this.config(); //define methods/props using aliases (now ready)
-	this.pubSub(); //set up publisher and subscriptions
-	this.publish(null,'init'); //---------------------------------------------------------------------------------->
-}.bind(SPNDR.view.signup);
+//Namespace and init
+SPNDR.setupInit('view.signup'); //--------------------------------------------------------------------------------->
 
 
 SPNDR.view.signup.config=function(){

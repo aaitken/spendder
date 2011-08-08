@@ -2,14 +2,8 @@ require([
 	'scripts/components/utils/sha1.js'
 ],function(){
 
-	//NAMESPACE + ALIASES===============================================================================================
-	SPNDR.namespace('ctrl.signup');
-
-	SPNDR.ctrl.signup.init=function(){
-		this.config();
-		this.pubSub1();
-		this.publish(null,'init'); //------------------------------------------------------------------------------>
-	}.bind(SPNDR.ctrl.signup);
+	//Namespace and init
+	SPNDR.setupInit('ctrl.signup'); //----------------------------------------------------------------------------->
 
 
 	SPNDR.ctrl.signup.config=function(){

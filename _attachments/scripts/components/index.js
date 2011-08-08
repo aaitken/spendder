@@ -33,18 +33,21 @@ function(formToJson,pubSub,augmentJson,histMan,cookies/*,css*/){
 
 	//2nd 'set' of script requests
 	require([
-		'scripts/logic/props.js',
-		'scripts/logic/ctrl.app.js',
-		'scripts/logic/view.app.js',
-		'scripts/logic/ctrl.index.js',
-		'scripts/logic/view.index.js'
-	],
-	//callback
-	function(){
-		//callback - domready
-		require.ready(function(){
-			SPNDR.ctrl.app.init(); //in turn fires view.app.init
-			SPNDR.ctrl.index.init(); //in turn fires view.index.init
+		'scripts/components/scaffolding/SPNDR.js' //includes abstraction of ctrl-view setup
+	],function(){
+		require([
+			'scripts/logic/ctrl.app.js',
+			'scripts/logic/view.app.js',
+			'scripts/logic/ctrl.index.js',
+			'scripts/logic/view.index.js'
+		],
+		//callback
+		function(){
+			//callback - domready
+			require.ready(function(){
+				SPNDR.ctrl.app.init(); //in turn fires view.app.init
+				SPNDR.ctrl.index.init(); //in turn fires view.index.init
+			});
 		});
-	});
+	})
 });

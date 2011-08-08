@@ -1,14 +1,7 @@
 //FIRST-LOAD INITIALIZATION CODE========================================================================================
 
-//Namespace
-SPNDR.namespace('ctrl.info');
-
-//Init (fire this only after app, utils, ctrl[page], and view[page] have been received)
-SPNDR.ctrl.info.init=function(){
-	this.config(); //define methods/props using aliases (now ready)
-	this.pubSub1(); //set up publisher and subscriptions
-	this.publish(null,'init'); //---------------------------------------------------------------------------------->
-}.bind(SPNDR.ctrl.info);
+//Namespace and init
+SPNDR.setupInit('ctrl.info'); //----------------------------------------------------------------------------------->
 
 
 SPNDR.ctrl.info.config=function(){

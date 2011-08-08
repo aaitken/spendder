@@ -1,14 +1,7 @@
 //FIRST-LOAD INITIALIZATION CODE========================================================================================
 
-//Namespace
-SPNDR.namespace('view.app'); //on load
-
-//Init (fire this only after app, utils, ctrl[page], and view[page] have been received)
-SPNDR.view.app.init=function(){
-	this.config(); //define methods/props using aliases
-	this.pubSub(); //set up publisher and subscriptions
-	this.publish(null,'init'); //---------------------------------------------------------------------------------->
-}.bind(SPNDR.view.app); //b/c fired through pubSub
+//Namespace and init
+SPNDR.setupInit('view.app'); //------------------------------------------------------------------------------------>
 
 
 SPNDR.view.app.config=function(){
