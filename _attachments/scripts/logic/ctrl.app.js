@@ -13,12 +13,10 @@ SPNDR.ctrl.app.config=function(){
 
 		//SPNDR.app subscribes listeners to... <---------------------------------------------------------- listeners
 		//init
-		this.subscribe(this.setup,'init');
+		this.subscribe(viewApp.setup,'init');
 		//showReceipt
-		this.subscribe(this.updateHistory,'showReceipt');
+		this.subscribe(viewApp.updateHistory,'showReceipt');
 		this.subscribe(viewApp.renderShow,'showReceipt');
-		//urlRequest
-		this.subscribe(this.hitUrl,'urlRequest');
 	}.bind(this); //subscribed to view.init
 
 	//METHODS===========================================================================================================
@@ -96,36 +94,5 @@ SPNDR.ctrl.app.config=function(){
 			case 'session':session(obj);break;
 			default: return;
 		}
-
 	};
-
-	//browser url and history management
-	this.updateHistory=function(obj){
-		if(obj.history){window.history.pushState(null,'',obj.url)}
-	};
-
-	//setup
-	this.setup=function(){
-
-		//listener setup for clicks on els with data-url, publish the attribute's value
-		$('a[data-api]').live('click',function(e){
-			var $targ=$(e.target);
-			that.publish({
-				url:$targ.attr('data-url')||null, //session api, for example, only has a single url
-				api:$targ.attr('data-api'),
-				mthd:$targ.attr('data-mthd')||null, //will default to 'GET' in api
-				history:true
-			},'urlRequest'); //----------------------------------------------------------------------------------->
-		});
-
-		//history management - init param = function to fire on popstate
-		SPNDR.scaffolding.history.init(function(){
-			that.publish({
-				url:window.location.href.split('/').pop(),
-				api:'show',
-				history:false
-			},'urlRequest'); //----------------------------------------------------------------------------------->
-		});
-
-	}
 };
