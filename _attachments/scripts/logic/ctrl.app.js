@@ -14,9 +14,12 @@ SPNDR.ctrl.app.config=function(){
 		//SPNDR.app subscribes listeners to... <---------------------------------------------------------- listeners
 		//init
 		this.subscribe(viewApp.setup,'init');
+		this.subscribe(this.hitUrl,'init'); //request index
 		//showReceipt
 		this.subscribe(viewApp.updateHistory,'showReceipt');
 		this.subscribe(viewApp.renderShow,'showReceipt');
+		//urlRequest
+		this.subscribe(this.hitUrl,'urlRequest');
 	};
 
 	//METHODS===========================================================================================================

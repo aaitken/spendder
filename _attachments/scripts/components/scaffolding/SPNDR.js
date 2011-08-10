@@ -16,7 +16,18 @@ SPNDR.init=function(ns){ //ns = two-part namespace: 'ctrl||view.page'
 			SPNDR.view[page].config();
 			this.pubSub();
 			SPNDR.view[page].pubSub();
-			this.publish(null,'init'); //we're done - broadcast the init------------------------------------------->
+			if(page==='app'){
+				this.publish({
+					url:window.location.href.split('/').pop(),
+					api:'show',
+					history:false
+				},'init'); //we're done - broadcast the init with info for index.html request --------------------->
+			}
+			else{
+				this.publish(null,'init'); //we're done - broadcast the init--------------------------------------->
+			}
+
+
 		}.bind(SPNDR.ctrl[page]); //bound because called from within pubsub
 	}
 };

@@ -37,16 +37,13 @@ function(formToJson,pubSub,augmentJson,histMan,cookies/*,css*/){
 	],function(){
 		require([
 			'scripts/logic/ctrl.app.js',
-			'scripts/logic/view.app.js',
-			'scripts/logic/ctrl.index.js',
-			'scripts/logic/view.index.js'
+			'scripts/logic/view.app.js'
 		],
 		//callback
 		function(){
 			//callback - domready
 			require.ready(function(){
 				SPNDR.ctrl.app.init(); //in turn fires view.app.init
-				SPNDR.ctrl.index.init(); //in turn fires view.index.init
 			});
 		});
 	})

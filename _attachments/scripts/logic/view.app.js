@@ -11,7 +11,7 @@ SPNDR.view.app.config=function(){
 
 		//Obj subscribes its listeners to... <-------------------------------------------------------------listeners
 		//urlRequest
-		this.subscribe(ctrlApp.hitUrl,'urlRequest')
+		this.subscribe(ctrlApp.hitUrl,'urlRequest');
 	};
 
 	//METHODS===========================================================================================================
