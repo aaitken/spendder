@@ -1,8 +1,4 @@
-//FIRST-LOAD INITIALIZATION CODE========================================================================================
-
-//Namespace and init
-SPNDR.setupInit('ctrl.app'); //------------------------------------------------------------------------------------>
-
+SPNDR.init('ctrl.app'); //Namespace with init function, which publishes when ctrl and view files are down --------->
 SPNDR.ctrl.app.config=function(){
 
 	//Aliases
@@ -12,29 +8,16 @@ SPNDR.ctrl.app.config=function(){
 
 	//PUBSUB============================================================================================================
 
-	//make SPNDR.app a publisher (who can 'subscribe' listeners)
-	SPNDR.scaffolding.pubSub.makePublisher(this);
-
 	//subscribe ctrl methods and immediately-available view.init
-	this.pubSub1=function(){
+	this.pubSub=function(){
 
-		//SPNDR.app subscribes listeners to... <------------------------------------------------controller listeners
+		//SPNDR.app subscribes listeners to... <---------------------------------------------------------- listeners
 		//init
-		this.subscribe(this.setup,'init');
-		this.subscribe(viewApp.init,'init'); //init = only view method immediately available, it gives others
+		this.subscribe(viewApp.setup,'init');
 		//showReceipt
-		this.subscribe(this.updateHistory,'showReceipt');
-		//urlRequest
-		this.subscribe(this.hitUrl,'urlRequest');
+		this.subscribe(viewApp.updateHistory,'showReceipt');
+		this.subscribe(viewApp.renderShow,'showReceipt');
 	};
-	
-	//subscribe view methods
-	this.pubSub2=function(){
-
-		//SPNDR.app subscribes listeners to... <------------------------------------------------------view listeners
-		//showReceipt
-		this.subscribe(viewApp.renderShow,'showReceipt'); //doesn't exist until viewApp.init fires
-	}.bind(this); //subscribed to view.init
 
 	//METHODS===========================================================================================================
 
@@ -52,17 +35,21 @@ SPNDR.ctrl.app.config=function(){
 
 			var namespace=obj.url.split('.')[0], //root part of show name, minus the .html
 				requireArray=['text!/spendder/_design/spendder/_show/'+obj.url],
-				callback=null; //page init function to fire depending on if code has already been loaded
+				callback=null;
 
-			if(!SPNDR.ctrl[namespace]){ //if we haven't already loaded this file
+			//if we haven't already loaded this show file
+			if(!SPNDR.ctrl[namespace]){
 				requireArray=requireArray.concat([
 					'scripts/logic/ctrl.'+namespace+'.js',
 					'scripts/logic/view.'+namespace+'.js'
 				]);
-				callback='init';
+
+				//set up namespaces subscriptions and publish 'init' from controller
+				callback='ctrl-init';
 			}
 			else{
-				callback='setup';
+				//attach DOM behaviors/listeners only
+				callback='view-setup';
 			}
 
 			require(requireArray,function(html){
@@ -72,7 +59,7 @@ SPNDR.ctrl.app.config=function(){
 							url:obj.url,
 							history:obj.history,
 							response:html,
-							callback:SPNDR.ctrl[namespace][callback] //ctr.init fires view.init
+							callback:SPNDR[callback.split('-')[0]][namespace][callback.split('-')[1]]
 						},'showReceipt'); //----------------------------------------------------------------------->
 					},
 					poll; //polling interval for requires within page-specific files
@@ -88,7 +75,6 @@ SPNDR.ctrl.app.config=function(){
 						}
 					},100);
 				}
-
 			});
 		};
 		session=function(obj){
@@ -111,36 +97,5 @@ SPNDR.ctrl.app.config=function(){
 			case 'session':session(obj);break;
 			default: return;
 		}
-
-	};
-
-	//browser url and history management
-	this.updateHistory=function(obj){
-		if(obj.history){window.history.pushState(null,'',obj.url)}
-	};
-
-	//setup
-	this.setup=function(){
-
-		//listener setup for clicks on els with data-url, publish the attribute's value
-		$('a[data-api]').live('click',function(e){
-			var $targ=$(e.target);
-			that.publish({
-				url:$targ.attr('data-url')||null, //session api, for example, only has a single url
-				api:$targ.attr('data-api'),
-				mthd:$targ.attr('data-mthd')||null, //will default to 'GET' in api
-				history:true
-			},'urlRequest'); //----------------------------------------------------------------------------------->
-		});
-
-		//history management - init param = function to fire on popstate
-		SPNDR.scaffolding.history.init(function(){
-			that.publish({
-				url:window.location.href.split('/').pop(),
-				api:'show',
-				history:false
-			},'urlRequest'); //----------------------------------------------------------------------------------->
-		});
-
 	};
 };

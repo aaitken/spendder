@@ -1,15 +1,24 @@
+SPNDR.init=function(ns){ //ns = two-part namespace: 'ctrl||view.page'
+	var ns=ns.split('.'),
+		page=ns[1];
 
+	//no matter what comes in first, we're going to have to create both these -
+	//convention (vs configuration)
+	this.namespace('view.'+page);
+	this.namespace('ctrl.'+page);
 
-SPNDR.setupInit=function(ns){ //ns = two-part namespace: 'ctrl||view.page'
-	var nsSliced=ns.split('.');
-	this.namespace(ns);
-	SPNDR[nsSliced[0]][nsSliced[1]].init=function(){ //ex: SPNDR.view.index.init=...
-		this.config();
-		ns.split('.')[0]==='ctrl'?
-			this.pubSub1(): //if we're working with the ctrl object, fire pubSub1 (cuz 2 subscribes view mthds not-yet available)
-			this.pubSub(); //view has just the one pubSub func
-		this.publish(null,'init'); //we're done - broadcast the init
-	}.bind(SPNDR[nsSliced[0]][nsSliced[1]]); //bound because called from within pubsub
+	//make object a publisher (who can 'subscribe' listeners)
+	this.scaffolding.pubSub.makePublisher(this[ns[0]][page]);
+
+	if(!SPNDR.ctrl[page].init){ //setup controller init function 2b fired when files are down
+		SPNDR.ctrl[page].init=function(){ //ex: SPNDR.view.index.init=... called from external when both files are down
+			this.config(); //this is controller for ns
+			SPNDR.view[page].config();
+			this.pubSub();
+			SPNDR.view[page].pubSub();
+			this.publish(null,'init'); //we're done - broadcast the init------------------------------------------->
+		}.bind(SPNDR.ctrl[page]); //bound because called from within pubsub
+	}
 };
 
 SPNDR.props={

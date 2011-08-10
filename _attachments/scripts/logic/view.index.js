@@ -1,9 +1,4 @@
-//FIRST-LOAD INITIALIZATION CODE========================================================================================
-
-//Namespace and init
-SPNDR.setupInit('view.index'); //---------------------------------------------------------------------------------->
-
-
+SPNDR.init('view.index'); //Namespace with init function, which publishes when ctrl and view files are down ------->
 SPNDR.view.index.config=function(){
 
 	//Aliases
@@ -15,15 +10,11 @@ SPNDR.view.index.config=function(){
 
 	//PUBSUB============================================================================================================
 
-	//make the namespace a publisher (who can 'subscribe' listeners)
-	SPNDR.scaffolding.pubSub.makePublisher(this);
-
 	this.pubSub=function(){
 
 		//namespace subscribes its listeners to... <-------------------------------------------------------listeners
-		//init
-		this.subscribe(ctrlIndex.pubSub2,'init');
-		this.subscribe(this.setup,'init');
+		//submit
+		this.subscribe(ctrlIndex.handleSubmit,'submit');
 
 	};
 
@@ -49,5 +40,10 @@ SPNDR.view.index.config=function(){
 			$navHdr.html($('#info').html());
 			$navHdr.removeClass('display-no');
 		}
-	}
+
+		//add listener > publisher for transaction submits
+		$('form[name=login]').bind('submit',function(e){
+			that.publish(e,'submit'); //--------------------------------------------------------------------------->
+		});
+	};
 };

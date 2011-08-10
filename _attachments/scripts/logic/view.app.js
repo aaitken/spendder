@@ -1,23 +1,17 @@
-//FIRST-LOAD INITIALIZATION CODE========================================================================================
-
-//Namespace and init
-SPNDR.setupInit('view.app'); //------------------------------------------------------------------------------------>
-
-
+SPNDR.init('view.app'); //Namespace
 SPNDR.view.app.config=function(){
 
 	//Aliases
-	var ctrlApp=SPNDR.ctrl.app;
+	var ctrlApp=SPNDR.ctrl.app,
+		that=this;
 
 	//PUBSUB============================================================================================================
 
-	//make SPNDR.app a publisher (who can 'subscribe' listeners)
-	SPNDR.scaffolding.pubSub.makePublisher(this);
-
 	this.pubSub=function(){
 
-		//SPNDR.app subscribes its listeners to... <-------------------------------------------------------listeners
-		this.subscribe(ctrlApp.pubSub2,'init'); //make methods available to controller
+		//Obj subscribes its listeners to... <-------------------------------------------------------------listeners
+		//urlRequest
+		this.subscribe(ctrlApp.hitUrl,'urlRequest')
 	};
 
 	//METHODS===========================================================================================================
@@ -26,5 +20,33 @@ SPNDR.view.app.config=function(){
 	this.renderShow=function(obj){
 		$('#content').html(obj.response);
 		obj.callback(); //init or setup
+	};
+
+	//browser url and history management
+	this.updateHistory=function(obj){
+		if(obj.history){window.history.pushState(null,'',obj.url)}
+	};
+
+	this.setup=function(){
+
+		//listener setup for clicks on els with data-url, publish the attribute's value
+		$('a[data-api]').live('click',function(e){
+			var $targ=$(e.target);
+			that.publish({
+				url:$targ.attr('data-url')||null, //session api, for example, only has a single url
+				api:$targ.attr('data-api'),
+				mthd:$targ.attr('data-mthd')||null, //will default to 'GET' in api
+				history:true
+			},'urlRequest'); //----------------------------------------------------------------------------------->
+		});
+
+		//history management - init param = function to fire on popstate
+		SPNDR.scaffolding.history.init(function(){
+			that.publish({
+				url:window.location.href.split('/').pop(),
+				api:'show',
+				history:false
+			},'urlRequest'); //----------------------------------------------------------------------------------->
+		});
 	};
 };
