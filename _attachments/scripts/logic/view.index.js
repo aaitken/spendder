@@ -13,8 +13,8 @@ SPNDR.view.index.config=function(){
 	this.pubSub=function(){
 
 		//namespace subscribes its listeners to... <-------------------------------------------------------listeners
-		//init
-		//this.subscribe(this.setup,'init');
+		//submit
+		this.subscribe(ctrlIndex.handleSubmit,'submit');
 
 	};
 
@@ -40,5 +40,10 @@ SPNDR.view.index.config=function(){
 			$navHdr.html($('#info').html());
 			$navHdr.removeClass('display-no');
 		}
-	}
+
+		//add listener > publisher for transaction submits
+		$('form[name=login]').bind('submit',function(e){
+			that.publish(e,'submit'); //--------------------------------------------------------------------------->
+		});
+	};
 };

@@ -9,7 +9,7 @@ SPNDR.ctrl.info.config=function(){
 	this.pubSub=function(){
 
 		//SPNDR.ctrl subscribes its listeners to... <------------------------------------------------------listeners
-	}.bind(this);
+	};
 
 	//METHODS===========================================================================================================
 

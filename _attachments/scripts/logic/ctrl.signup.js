@@ -15,12 +15,10 @@ require([
 
 			//SPNDR.page.signup SUBSCRIBEs its listeners to...
 			//init
-			this.subscribe(this.setup,'init');
-			//submit (form submission)
-			this.subscribe(this.handleSubmit,'submit');
+			this.subscribe(viewSignup.setup,'init');
 			//receive (form response)
 			this.subscribe(viewSignup.handleReceive,'receive');
-		}.bind(this);
+		};
 
 		//METHODS=======================================================================================================
 
@@ -63,14 +61,6 @@ require([
 					var uuid=JSON.parse(response).uuids[0];
 					secondRequest(uuid);
 				}
-			});
-		};
-
-		//setup: Dom setup
-		this.setup=function(){
-			//add listener > publisher for signup submits
-			$('form[name=signup]').bind('submit',function(e){
-				that.publish(e,'submit'); //----------------------------------------------------------------------->
 			});
 		};
 	};

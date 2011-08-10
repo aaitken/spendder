@@ -17,7 +17,7 @@ SPNDR.ctrl.app.config=function(){
 		//showReceipt
 		this.subscribe(viewApp.updateHistory,'showReceipt');
 		this.subscribe(viewApp.renderShow,'showReceipt');
-	}.bind(this); //subscribed to view.init
+	};
 
 	//METHODS===========================================================================================================
 
@@ -35,17 +35,21 @@ SPNDR.ctrl.app.config=function(){
 
 			var namespace=obj.url.split('.')[0], //root part of show name, minus the .html
 				requireArray=['text!/spendder/_design/spendder/_show/'+obj.url],
-				callback=null; //page init function to fire depending on if code has already been loaded
+				callback=null;
 
-			if(!SPNDR.ctrl[namespace]){ //if we haven't already loaded this file
+			//if we haven't already loaded this show file
+			if(!SPNDR.ctrl[namespace]){
 				requireArray=requireArray.concat([
 					'scripts/logic/ctrl.'+namespace+'.js',
 					'scripts/logic/view.'+namespace+'.js'
 				]);
-				callback='init';
+
+				//set up namespaces subscriptions and publish 'init' from controller
+				callback='ctrl-init';
 			}
 			else{
-				callback='setup';
+				//attach DOM behaviors/listeners only
+				callback='view-setup';
 			}
 
 			require(requireArray,function(html){
@@ -55,7 +59,7 @@ SPNDR.ctrl.app.config=function(){
 							url:obj.url,
 							history:obj.history,
 							response:html,
-							callback:SPNDR.ctrl[namespace][callback] //ctr.init fires view.init
+							callback:SPNDR[callback.split('-')[0]][namespace][callback.split('-')[1]]
 						},'showReceipt'); //----------------------------------------------------------------------->
 					},
 					poll; //polling interval for requires within page-specific files
@@ -71,7 +75,6 @@ SPNDR.ctrl.app.config=function(){
 						}
 					},100);
 				}
-
 			});
 		};
 		session=function(obj){

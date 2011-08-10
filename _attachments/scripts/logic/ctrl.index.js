@@ -12,11 +12,8 @@ SPNDR.ctrl.index.config=function(){
 	this.pubSub=function(){
 
 		//namespace subscribes its listeners to... <--------------------------------------------controller listeners
-		//init
-		this.subscribe(this.setup,'init');
+		//init - fired from app controller
 		this.subscribe(viewIndex.setup,'init');
-		//submit
-		this.subscribe(this.handleSubmit,'submit');
 		//receive
 		this.subscribe(viewIndex.handleReceive,'receive');
 	}.bind(this);
@@ -37,15 +34,6 @@ SPNDR.ctrl.index.config=function(){
 				if(error==='error'){alert(xhr.responseText)}
 				else{alert(error)}
 			}
-		});
-	};
-
-	//setup: Dom setup
-	this.setup=function(){
-
-		//add listener > publisher for transaction submits
-		$('form[name=login]').bind('submit',function(e){
-			that.publish(e,'submit'); //--------------------------------------------------------------------------->
 		});
 	};
 };
