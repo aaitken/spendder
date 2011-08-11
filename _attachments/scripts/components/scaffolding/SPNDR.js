@@ -18,7 +18,7 @@ SPNDR.init=function(ns){ //ns = two-part namespace: 'ctrl||view.page'
 			SPNDR.view[page].pubSub();
 			if(page==='app'){
 				this.publish({
-					url:window.location.href.split('/').pop(),
+					url:'login.html',
 					api:'show',
 					history:false
 				},'init'); //we're done - broadcast the init with info for index.html request --------------------->

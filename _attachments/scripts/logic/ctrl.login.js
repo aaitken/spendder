@@ -1,10 +1,10 @@
-SPNDR.init('ctrl.index'); //Namespace with init function, which publishes when ctrl and view files are down ------->
-SPNDR.ctrl.index.config=function(){
+SPNDR.init('ctrl.login'); //Namespace with init function, which publishes when ctrl and view files are down ------->
+SPNDR.ctrl.login.config=function(){
 
 	//Aliases
 	var ctrlApp=SPNDR.ctrl.app,
 		that=this, //re-usable reference for inner function convention
-		viewIndex=SPNDR.view.index,
+		viewLogin=SPNDR.view.login,
 		utils=SPNDR.utils;
 
 	//PUBSUB============================================================================================================
@@ -13,9 +13,9 @@ SPNDR.ctrl.index.config=function(){
 
 		//namespace subscribes its listeners to... <--------------------------------------------controller listeners
 		//init - fired from app controller
-		this.subscribe(viewIndex.setup,'init');
+		this.subscribe(viewLogin.setup,'init');
 		//receive
-		this.subscribe(viewIndex.handleReceive,'receive');
+		this.subscribe(viewLogin.handleReceive,'receive');
 	}.bind(this);
 
 	//METHODS===========================================================================================================
