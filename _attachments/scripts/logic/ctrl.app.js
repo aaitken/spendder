@@ -36,6 +36,7 @@ SPNDR.ctrl.app.config=function(){
 
 		show=function(obj){
 
+			if(obj.url==='index.html'){obj.url='login.html'} //for history(-1) that resolves to index.html - complement to this logic is in viewApp.updateHistory
 			var namespace=obj.url.split('.')[0], //root part of show name, minus the .html
 				requireArray=['text!/spendder/_design/spendder/_show/'+obj.url],
 				callback=null;

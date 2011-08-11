@@ -24,6 +24,7 @@ SPNDR.view.app.config=function(){
 
 	//browser url and history management
 	this.updateHistory=function(obj){
+		if(window.location.href.split('/').pop()==='index.html'&&obj.url==='login.html'){obj.history=true} //for history(-1) that resolves to index.html/login page - complement to this logic is in ctrlApp.show
 		if(obj.history){window.history.pushState(null,'',obj.url)}
 	};
 
