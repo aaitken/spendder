@@ -23,7 +23,7 @@ SPNDR.view.login.config=function(){
 	//receipt of authorization cookie request
 	this.handleReceive=function(){
 		$('body')[0].className='logged-in';
-		$('nav h1').html(props.jsCache.navHdrHtml);
+		$('nav h1').html(props.jsCache.navHdrHtml); //replace 'Info' with 'Menu'
 	};
 
 	this.setup=function(){
@@ -35,10 +35,10 @@ SPNDR.view.login.config=function(){
 
 		//adjust nav based on user's logged-in status
 		if($('body').hasClass('logged-out')){
-			var $navHdr=$('nav h1');
+			var $navHdr=$('nav h1'); //'Menu' per html
 			props.jsCache.navHdrHtml=$navHdr.html(); //store off default logged-in html for re-insertion
-			$navHdr.html($('#info').html());
-			$navHdr.removeClass('display-no');
+			$navHdr.html($('#info').html()); //replace 'Menu' with 'Info'
+			$navHdr.removeClass('display-no'); //show
 		}
 
 		//add listener > publisher for transaction submits

@@ -81,13 +81,15 @@ SPNDR.ctrl.app.config=function(){
 				}
 			});
 		};
+
+		//currently set up for delete...
 		session=function(obj){
 			$.ajax({
 				type:obj.mthd,
 				url:props.host+'_session',
 				success:function(){
 					that.publish({
-						url:'index.html', //session api, for example, only has a single url
+						url:'index.html',
 						api:'show',
 						history:true
 					},'urlRequest'); //---------------------------------------------------------------------------->
