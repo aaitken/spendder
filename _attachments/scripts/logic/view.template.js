@@ -1,17 +1,19 @@
-SPNDR.init('ctrl.home'); //Namespace
-SPNDR.ctrl.home.config=function(){
+SPNDR.init('view.ns'); //Namespace
+SPNDR.view.ns.config=function(){
 
 	//Aliases
-	var viewHome=SPNDR.view.home;
+	var ctrlNs=SPNDR.ctrl.ns;
 
 	//PUBSUB============================================================================================================
 
 	this.pubSub=function(){
 
 		//SPNDR.page.signup subscribes its listeners to... <-----------------------------------------------listeners
-		this.subscribe(viewHome.setup,'init');
 	};
 
 	//METHODS===========================================================================================================
 
+	this.setup=function(){
+		return;
+	};
 };
