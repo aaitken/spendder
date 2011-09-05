@@ -34,7 +34,9 @@ SPNDR.init=function(ns){ //ns = two-part namespace: 'ctrl||view.page'
 
 SPNDR.props={
 	host:'http://127.0.0.1:5984/',
+	app:'spendder',
 	path:'spendder/_design/spendder/',
 	waitOnRequirements:false, //for require dependencies within page-specific files
-	jsCache:{}
+	jsCache:{},
+	user:null
 }

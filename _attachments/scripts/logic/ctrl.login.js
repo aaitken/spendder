@@ -16,6 +16,7 @@ SPNDR.ctrl.login.config=function(){
 		//init - fired from app controller
 		this.subscribe(viewLogin.setup,'init');
 		//receive
+		this.subscribe(this.setUser,'receive');
 		this.subscribe(viewLogin.handleReceive,'receive');
 		//urlRequest
 		this.subscribe(ctrlApp.hitUrl,'urlRequest');
@@ -24,6 +25,10 @@ SPNDR.ctrl.login.config=function(){
 	//METHODS===========================================================================================================
 
 	//handleSubmit: two-part authorization request
+	this.setUser=function(){
+		props.user=$('input[name=name]').val();
+	};
+
 	this.handleSubmit=function(e){
 		e.preventDefault();
 		$.ajax({

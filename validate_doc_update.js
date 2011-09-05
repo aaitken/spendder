@@ -8,7 +8,7 @@ function(newDoc,oldDoc,userCtx){
 		};
 
 	switch(newDoc.type){
-		case 'transaction':
+		case 'spend':
 			require('amt');
 			break;
 		case 'user':
