@@ -104,4 +104,9 @@ SPNDR.ctrl.app.config=function(){
 			default: return;
 		}
 	};
+
+	//back nav in history - may tie in to user's logged-in state
+	this.back=function(){
+		history.back();
+	};
 };

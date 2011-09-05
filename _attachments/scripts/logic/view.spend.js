@@ -2,13 +2,17 @@ SPNDR.init('view.spend'); //Namespace
 SPNDR.view.spend.config=function(){
 
 	//Aliases
-	var ctrlSpend=SPNDR.ctrl.spend;
+	var ctrlSpend=SPNDR.ctrl.spend,
+		ctrlApp=SPNDR.ctrl.app,
+		that=this;
 
 	//PUBSUB============================================================================================================
 
 	this.pubSub=function(){
 
 		//SPNDR.page.signup subscribes its listeners to... <-----------------------------------------------listeners
+		//cancel
+		this.subscribe(ctrlApp.back,'cancel');
 	};
 
 	//METHODS===========================================================================================================
@@ -17,7 +21,7 @@ SPNDR.view.spend.config=function(){
 
 		//Cancel button
 		$($('button')[1]).bind('click',function(){
-			history.back();
+			that.publish(null,'cancel'); //------------------------------------------------------------------------->
 		});
 	};
 };
