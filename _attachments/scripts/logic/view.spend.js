@@ -14,6 +14,10 @@ SPNDR.view.spend.config=function(){
 	//METHODS===========================================================================================================
 
 	this.setup=function(){
-		alert('yay');
+
+		//Cancel button
+		$($('button')[1]).bind('click',function(){
+			history.back();
+		});
 	};
 };
