@@ -2,7 +2,7 @@ function(newDoc,oldDoc,userCtx){
 
 	var require=function(field,message){
 			message=message||field+' is required.';
-			if(!newDoc[field]){
+			if(!newDoc[field]||newDoc[field]===''){
 				throw({forbidden:message});
 			}
 		};

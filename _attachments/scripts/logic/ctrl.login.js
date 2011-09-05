@@ -26,7 +26,7 @@ SPNDR.ctrl.login.config=function(){
 
 	//handleSubmit: two-part authorization request
 	this.setUser=function(){
-		props.user=$('input[name=name]').val();
+		props.user=$('input[name=name]').val(); //todo - use api to get user info
 	};
 
 	this.handleSubmit=function(e){
