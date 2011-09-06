@@ -7,6 +7,7 @@ require([
 		//Aliases
 		var that=this,
 			viewSignup=SPNDR.view.signup,
+			viewApp=SPNDR.view.app,
 			utils=SPNDR.utils;
 
 		//PUBSUB========================================================================================================
@@ -14,6 +15,8 @@ require([
 		this.pubSub=function(){
 
 			//SPNDR.page.signup SUBSCRIBEs its listeners to...
+			//error
+			this.subscribe(viewApp.showError,'error');
 			//init
 			this.subscribe(viewSignup.setup,'init');
 			//receive (form response)
@@ -43,12 +46,11 @@ require([
 					contentType:'application/json',
 					url:'http://127.0.0.1:5984/_users',
 					success:function(body){
-						that.publish(body,'receive'); //------------------------------------------------------->
-					},
+							that.publish(body,'receive'); //------------------------------------------------------->
+						},
 					error:function(xhr,error){
-						if(error==='error'){alert(xhr.responseText)}
-						else{alert(error)}
-					}
+							that.publish({xhr:xhr,error:error},'error'); //---------------------------------------->
+						}
 				});
 			};
 
@@ -58,9 +60,12 @@ require([
 			$.ajax({
 				url:'http://127.0.0.1:5984/_uuids',
 				success:function(response){
-					var uuid=JSON.parse(response).uuids[0];
-					secondRequest(uuid);
-				}
+						var uuid=JSON.parse(response).uuids[0];
+						secondRequest(uuid);
+					},
+				error:function(xhr,error){
+						that.publish({xhr:xhr,error:error},'error'); //-------------------------------------------->
+					}
 			});
 		};
 	};

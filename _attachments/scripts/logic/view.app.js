@@ -22,6 +22,12 @@ SPNDR.view.app.config=function(){
 		obj.callback(); //init or setup
 	};
 
+	//handling of error branch for ajax requests
+	this.showError=function(obj){
+		if(obj.error==='error'){alert(obj.xhr.responseText)}
+		else{alert(obj.error)}
+	};
+
 	//browser url and history management
 	this.updateHistory=function(obj){
 		if(window.location.href.split('/').pop()==='index.html'&&obj.url==='login.html'){obj.history=true} //for history(-1) that resolves to index.html/login page - complement to this logic is in ctrlApp.show

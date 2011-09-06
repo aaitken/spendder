@@ -12,6 +12,8 @@ SPNDR.ctrl.app.config=function(){
 	this.pubSub=function(){
 
 		//SPNDR.app subscribes listeners to... <---------------------------------------------------------- listeners
+		//error
+		this.subscribe(viewApp.showError,'error');
 		//init
 		this.subscribe(viewApp.setup,'init');
 		this.subscribe(this.hitUrl,'init'); //request index
@@ -88,13 +90,15 @@ SPNDR.ctrl.app.config=function(){
 				type:obj.mthd,
 				url:props.host+'_session',
 				success:function(){
-					that.publish({
-						url:'index.html',
-						api:'show',
-						history:true
-					},'urlRequest'); //---------------------------------------------------------------------------->
-				},
-				error:function(xhr,error){}
+						that.publish({
+							url:'index.html',
+							api:'show',
+							history:true
+						},'urlRequest'); //------------------------------------------------------------------------>
+					},
+				error:function(xhr,error){
+						that.publish({xhr:xhr,error:error},'error'); //-------------------------------------------->
+					}
 			});
 		};
 

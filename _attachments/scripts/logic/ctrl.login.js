@@ -3,6 +3,7 @@ SPNDR.ctrl.login.config=function(){
 
 	//Aliases
 	var ctrlApp=SPNDR.ctrl.app,
+		viewApp=SPNDR.view.app,
 		that=this, //re-usable reference for inner function convention
 		viewLogin=SPNDR.view.login,
 		utils=SPNDR.utils,
@@ -13,6 +14,8 @@ SPNDR.ctrl.login.config=function(){
 	this.pubSub=function(){
 
 		//namespace subscribes its listeners to... <--------------------------------------------controller listeners
+		//error
+		this.subscribe(viewApp.showError,'error');
 		//init - fired from app controller
 		this.subscribe(viewLogin.setup,'init');
 		//receive
@@ -26,7 +29,12 @@ SPNDR.ctrl.login.config=function(){
 
 	//handleSubmit: two-part authorization request
 	this.setUser=function(){
-		props.user=$('input[name=name]').val(); //todo - use api to get user info
+		$.ajax({
+			url:props.host+'_session',
+			success:function(body){
+				props.user=JSON.parse(body).userCtx.name;
+			}
+		})
 	};
 
 	this.handleSubmit=function(e){
@@ -36,17 +44,16 @@ SPNDR.ctrl.login.config=function(){
 			data:'name='+$('input[name=name]').val()+'&password='+$('input[name=password]').val(), //NOT json
 			url:props.host+'_session',
 			success:function(body){
-				that.publish(body,'receive'); //------------------------------------------------------------------->
-				that.publish({
-					url:'home.html',
-					api:'show',
-					history:true
-				},'urlRequest'); //-------------------------------------------------------------------------------->
-			},
+					that.publish(body,'receive'); //--------------------------------------------------------------->
+					that.publish({
+						url:'home.html',
+						api:'show',
+						history:true
+					},'urlRequest'); //---------------------------------------------------------------------------->
+				},
 			error:function(xhr,error){
-				if(error==='error'){alert(xhr.responseText)}
-				else{alert(error)}
-			}
+					that.publish({xhr:xhr,error:error},'error'); //------------------------------------------------>
+				}
 		});
 	};
 };

@@ -3,6 +3,7 @@ SPNDR.ctrl.spend.config=function(){
 
 	//Aliases
 	var viewSpend=SPNDR.view.spend,
+		viewApp=SPNDR.view.app,
 		props=SPNDR.props,
 		that=this,
 		utils=SPNDR.utils;
@@ -12,6 +13,8 @@ SPNDR.ctrl.spend.config=function(){
 	this.pubSub=function(){
 
 		//SPNDR.page.signup subscribes its listeners to... <-----------------------------------------------listeners
+		//error
+		this.subscribe(viewApp.showError,'error');
 		//init
 		this.subscribe(viewSpend.setup,'init');
 		//receive
@@ -36,12 +39,11 @@ SPNDR.ctrl.spend.config=function(){
 					"geo":""\
 				'),
 			success:function(body){
-				that.publish(body,'receive'); //------------------------------------------------------------------->
-			},
+					that.publish(body,'receive'); //--------------------------------------------------------------->
+				},
 			error:function(xhr,error){
-				if(error==='error'){alert(xhr.responseText)}
-				else{alert(error)}
-			}
+					that.publish({xhr:xhr,error:error},'error'); //------------------------------------------------>
+				}
 		});
 	};
 };
